@@ -1,0 +1,9 @@
+/* 原生壳只负责窗口标题栏与安全区；响应式布局统一在 workbench.css 中。 */
+html[data-platform="mac"] .titlebar { display:flex;gap:12px;padding:0 16px 0 84px;height:44px;-webkit-app-region:drag; }
+html[data-platform="mac"] .title-center { flex:1; }
+html[data-platform="mac"] .traffic { display:none; }
+html[data-platform="mac"] .titlebar button { -webkit-app-region:no-drag; }
+html[data-platform="android"] .titlebar { display:none; }
+html[data-platform="android"] .desk { height:100dvh; }
+html[data-platform="android"] .chat-header { padding-top:max(12px,env(safe-area-inset-top)); }
+html[data-platform="android"] .side-footer { padding-bottom:max(14px,env(safe-area-inset-bottom)); }

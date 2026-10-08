@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="system">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chorus</title>
+  <link rel="stylesheet" href="platform.css?v=0.5.8" />
+  <link rel="stylesheet" href="app.css?v=0.5.8" />
+  <link rel="stylesheet" href="workbench.css?v=0.5.8" />
+  <link rel="stylesheet" href="vendor/xterm.css?v=0.5.8" />
+  <link rel="stylesheet" href="updates.css?v=0.5.8" />
+</head>
+<body>
+  <div class="desk">
+    <div class="window" role="application" aria-label="Chorus 主窗口">
+      <div class="titlebar">
+        <div class="traffic" aria-hidden="true">
+          <span class="r"></span><span class="y"></span><span class="g"></span>
+        </div>
+        <div class="title-center" title="Chorus">
+          <span class="title-brand">Chorus</span>
+          <span class="title-sep">·</span>
+          <span class="title-sub" id="titleSub">选择 Agent 开始对话</span>
+        </div>
+        <div class="title-actions">
+          <button class="tb-btn" type="button" id="btnNewRoom">新建团队</button>
+          <button class="tb-btn primary" type="button" id="btnNewAgent">新建 Agent</button>
+        </div>
+      </div>
+
+      <div class="body" id="appBody">
+        <aside class="sidebar">
+          <div class="side-brand">
+            <div class="logo-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div>
+              <h1>Chorus</h1>
+              <small>让想法成为团队的成果</small>
+            </div>
+          </div>
+
+          <label class="side-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="sidebarSearch" type="search" placeholder="搜索团队或 Agent" aria-label="搜索团队或 Agent" /></label>
+          <div class="side-scroll">
+          <div class="side-section">
+            团队空间
+            <button type="button" id="btnNewRoomSide" title="新建团队" aria-label="新建团队">+</button>
+          </div>
+          <ul class="side-list" id="roomList"></ul>
+
+          <div class="side-section">
+            Agents
+            <button type="button" id="btnNewAgentSide" title="新建 Agent" aria-label="新建 Agent">+</button>
+          </div>
+          <ul class="side-list" id="agentList"></ul>
+
+          </div>
+          <button type="button" class="app-update-button" id="btnAppUpdate" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg><span data-update-label>下载更新</span></button>
+          <div class="side-footer">
+            <button type="button" class="account-chip" id="btnAccount" title="登录或注册账号" aria-label="登录或注册账号">
+              <span class="av" id="accountAvatar">?</span>
+              <span class="meta">
+                <div class="name" id="accountName">未登录</div>
+                <div class="sub" id="accountSub">点击登录 / 注册</div>
+              </span>
+            </button>
+            <button type="button" class="settings-icon-btn" id="btnOpenSettings" title="设置 (⌘,)" aria-label="打开设置">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.2.6.7 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path>
+              </svg>
+            </button>
+          </div>
+        </aside>
+
+        <main class="chat">
+          <button type="button" class="panel-expand-fab" id="btnExpandPanel" title="显示详情">详情</button>
+          <div class="chat-header">
+            <button type="button" class="icon-btn mobile-menu" id="btnMobileMenu" aria-label="打开导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <div class="header-avatar" id="chatAvatar" aria-hidden="true"></div>
+            <button type="button" class="icon-btn mobile-update-button" id="btnMobileUpdate" title="下载更新" aria-label="下载更新" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg></button>
+            <div class="chat-header-main">
+              <h2 id="roomTitle">选择 Agent</h2>
+              <p id="roomSub">每个 Agent 有自己的对话与工作区</p>
+            </div>
+            <div class="chat-header-actions">
+              <button type="button" class="header-account-btn" id="btnHeaderAccount" title="登录或注册账号" aria-label="登录或注册账号">登录</button>
+              <span class="context-pill" id="contextPill">一对一对话</span>
+              <button class="icon-btn" type="button" id="btnTogglePanel" title="显示或隐藏详情" aria-label="显示或隐藏详情" aria-pressed="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <path d="M15 4v16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="team-strip" id="teamStrip" hidden></div>
+          <div class="messages" id="messages" role="log" aria-label="对话记录"></div>
+          <div class="typing" id="typing" hidden>
+            <span class="typing-dots"><span></span><span></span><span></span></span>
+            <span id="typingText">Architect 正在输入…</span>
+          </div>
+
+          <div class="composer">
+            <div class="composer-wrap">
+              <div class="mention-pop" id="mentionPop"></div>
+              <div class="composer-box">
+                <div class="attachment-list" id="composerAttachments" hidden></div>
+                <textarea id="composerInput" aria-label="消息" rows="2" placeholder="给当前 Agent 发消息…"></textarea>
+                <input id="composerFiles" type="file" multiple hidden />
+                <div class="composer-bar">
+                  <div class="composer-tools">
+                    <button class="tool-btn" type="button" id="btnMention">@ 点名</button>
+                    <button class="tool-btn" type="button" id="btnAttach">＋ 文件</button>
+                    <button class="tool-btn" type="button" id="btnTerminal">⌘ 终端</button>
+                  <button class="tool-btn" type="button" id="btnComposerMode" title="发送到 Agent 选择的后台，CLI 可直接编写和修改代码">模式：讨论</button>
+                  </div>
+                  <button class="send-btn" type="button" id="btnSend" aria-label="发送消息">发送 <span aria-hidden="true">↑</span></button><button class="stop-btn" type="button" id="btnStop" hidden>停止</button>
+                </div>
+              </div>
+            </div>
+            <div class="composer-hint"><span id="composerHint">团队成员按顺序回复，并共享讨论上下文</span><span class="keyboard-hint">Enter 发送 · Shift Enter 换行</span></div>
+          </div>
+        </main>
+
+        <aside class="panel" id="rightPanel" aria-label="详情侧栏">
+          <div class="panel-head">
+            <h3 id="panelTitle">团队设置</h3>
+            <button type="button" class="panel-collapse" id="btnCollapsePanel" title="折叠右侧栏">›</button>
+          </div>
+          <div class="panel-body" id="panelBody"></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- New / Edit Agent Modal -->
+  <div class="overlay" id="agentOverlay">
+    <div class="modal edit-wide" role="dialog" aria-modal="true" aria-labelledby="agentModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="agentModalTitle">新建 Agent</h2>
+          <p id="agentStepHint">第 1 步 · 人设与角色</p>
+        </div>
+        <button class="modal-close" type="button" data-close="agentOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="steps" id="agentSteps">
+          <div class="step on"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <div id="agentFormCreate">
+          <div id="agentStep1">
+            <div class="form-row">
+              <label for="agentName">名称</label>
+              <input id="agentName" placeholder="例如：Reviewer" maxlength="24" />
+            </div>
+            <div class="form-row">
+              <label for="agentRole">角色一句话</label>
+              <input id="agentRole" placeholder="例如：挑剔的代码审查官" maxlength="60" />
+            </div>
+            <div class="form-row">
+              <label for="agentPersona">人设 / 系统提示</label>
+              <textarea id="agentPersona" placeholder="描述这个 Agent 的立场、风格、边界…"></textarea>
+            </div>
+          </div>
+
+          <div id="agentStep2" hidden>
+<div class="form-row"><label>Agent 后台</label><div class="choice-grid backend-grid" id="backendChoices"><button type="button" class="choice selected" data-backend="model"><strong>自定义模型</strong><span>通过下方 Provider 连接模型</span></button><button type="button" class="choice" data-backend="codex"><strong>Codex</strong><span>完整编程后台 · 可修改文件</span></button><button type="button" class="choice" data-backend="claude"><strong>Claude Code</strong><span>完整编程后台 · 可修改文件</span></button><button type="button" class="choice" data-backend="cursor"><strong>Cursor</strong><span>完整编程后台 · 可修改文件</span></button></div><p class="form-help">CLI 后台直接编写和修改工作区文件；完整终端支持工具原生交互。手机可连接 Mac 使用 CLI。</p></div>
+<div id="modelConfigCreate">
+            <div class="form-row">
+              <label>对话模型 Provider</label>
+              <div class="choice-grid" id="providerChoices">
+                <button type="button" class="choice selected" data-provider="openai">
+                  <strong>OpenAI</strong>
+                  <span>OpenAI 官方接口</span>
+                </button>
+                <button type="button" class="choice" data-provider="anthropic">
+                  <strong>Anthropic</strong>
+                  <span>Claude 系列直连</span>
+                </button>
+                <button type="button" class="choice" data-provider="local">
+                  <strong>本地模型</strong>
+                  <span>Ollama Chat API</span>
+                </button>
+                <button type="button" class="choice" data-provider="custom">
+                  <strong>自定义 Endpoint</strong>
+                  <span>OpenAI 兼容，包括 LM Studio</span>
+                </button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="modelId">模型 ID</label>
+              <input id="modelId" placeholder="例如：gpt-4.1 / claude-sonnet-4-5 / qwen2.5" value="gpt-4.1" />
+            </div>
+            <div class="form-row" id="customEndpointRow" hidden>
+              <label for="modelEndpoint">自定义 Base URL</label>
+              <input id="modelEndpoint" placeholder="https://api.example.com/v1" />
+            </div>
+          </div>
+
+          </div>
+          <div id="agentStep3" hidden>
+
+            <div class="form-row">
+              <label>执行内核（Harness）</label>
+              <div class="choice-grid harness-grid" id="harnessChoices">
+                <button type="button" class="choice selected" data-harness="none">
+                  <strong>仅对话</strong>
+                  <span>仅使用模型讨论，只参与讨论</span>
+                  <span class="tag">chat</span>
+                </button>
+                <button type="button" class="choice" data-harness="codex">
+                  <strong>Codex</strong>
+                  <span>OpenAI Codex CLI / 会话</span>
+                  <span class="tag">codex</span>
+                </button>
+                <button type="button" class="choice" data-harness="claude">
+                  <strong>Claude Code</strong>
+                  <span>Anthropic 编程 Agent</span>
+                  <span class="tag">claude-code</span>
+                </button>
+                <button type="button" class="choice" data-harness="cursor">
+                  <strong>Cursor</strong>
+                  <span>Cursor Agent / Harness</span>
+                  <span class="tag">cursor</span>
+                </button>
+              </div>
+            </div>
+            <div id="createWorkspaceOptions" class="workspace-options"><p class="form-help">文件空间由主电脑自动管理，无需填写。只有修改已有项目时才需要绑定目录。</p><details><summary>绑定已有项目（可选）</summary><div class="form-row"><label for="agentWorkspace">主电脑上的项目目录</label><div class="workspace-picker"><input id="agentWorkspace" placeholder="留空，使用自动管理的文件空间" /><button type="button" class="ghost-btn" id="chooseCreateWorkspace">选择目录</button></div></div></details></div><div class="form-row" id="createHarnessModelRow" hidden><label for="createHarnessModel">执行模型</label><div class="workspace-picker"><select id="createHarnessModel"></select><button type="button" class="ghost-btn" id="refreshCreateModels">刷新</button></div><p class="form-help" id="createHarnessModelHint"></p></div>
+            <p style="font-size:12px;color:var(--text-faint);line-height:1.45;margin-top:4px;">
+              CLI 后台自带编程执行能力。自定义模型可以另外绑定 CLI，用于执行模型提出的任务。
+            </p>
+          </div>
+        </div>
+
+        <!-- 编辑模式：单页完整表单 -->
+        <div id="agentFormEdit" hidden>
+          <div class="edit-section-title">人设与角色</div>
+          <div class="form-row">
+            <label for="editAgentName">名称</label>
+            <input id="editAgentName" maxlength="24" />
+          </div>
+          <div class="form-row">
+            <label for="editAgentRole">角色一句话</label>
+            <input id="editAgentRole" maxlength="60" />
+          </div>
+          <div class="form-row">
+            <label for="editAgentPersona">人设 / 系统提示</label>
+            <textarea id="editAgentPersona"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="editAgentLabel">可选标签</label>
+            <input id="editAgentLabel" placeholder="例如：主力实现 / 代码审查" maxlength="40" />
+          </div>
+
+          <div id="editExecutionConfig">
+<div class="form-row"><label>Agent 后台</label><div class="choice-grid backend-grid" id="editBackendChoices"><button type="button" class="choice selected" data-backend="model"><strong>自定义模型</strong><span>通过下方 Provider 连接模型</span></button><button type="button" class="choice" data-backend="codex"><strong>Codex</strong><span>完整编程后台 · 可修改文件</span></button><button type="button" class="choice" data-backend="claude"><strong>Claude Code</strong><span>完整编程后台 · 可修改文件</span></button><button type="button" class="choice" data-backend="cursor"><strong>Cursor</strong><span>完整编程后台 · 可修改文件</span></button></div><p class="form-help">CLI 后台直接编写和修改工作区文件；完整终端支持工具原生交互。手机可连接 Mac 使用 CLI。</p></div>
+<div id="modelConfigEdit">
+          <div class="edit-section-title">自定义模型</div>
+          <div class="form-row">
+            <label>对话模型 Provider</label>
+            <div class="choice-grid" id="editProviderChoices">
+              <button type="button" class="choice" data-provider="openai"><strong>OpenAI</strong><span>OpenAI 官方接口</span></button>
+              <button type="button" class="choice" data-provider="anthropic"><strong>Anthropic</strong><span>Claude 直连</span></button>
+              <button type="button" class="choice" data-provider="local"><strong>本地模型</strong><span>Ollama Chat API</span></button>
+              <button type="button" class="choice" data-provider="custom"><strong>自定义 Endpoint</strong><span>OpenAI 兼容接口</span></button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="editModelId">模型 ID</label>
+            <input id="editModelId" />
+          </div>
+          <div class="form-row" id="editEndpointRow" hidden>
+            <label for="editModelEndpoint">自定义 Base URL</label>
+            <input id="editModelEndpoint" placeholder="https://api.example.com/v1" />
+          </div>
+          <div class="form-row">
+            <label for="editTemperature">Temperature</label>
+            <input id="editTemperature" type="number" min="0" max="2" step="0.1" value="0.7" />
+          </div>
+
+          </div>
+          <div class="edit-section-title">执行内核</div>
+
+          <div class="form-row">
+            <label>执行内核</label>
+            <div class="choice-grid harness-grid" id="editHarnessChoices">
+              <button type="button" class="choice" data-harness="none"><strong>仅对话</strong><span>仅使用模型讨论</span><span class="tag">chat</span></button>
+              <button type="button" class="choice" data-harness="codex"><strong>Codex</strong><span>CLI / 会话</span><span class="tag">codex</span></button>
+              <button type="button" class="choice" data-harness="claude"><strong>Claude Code</strong><span>编程 Agent</span><span class="tag">claude-code</span></button>
+              <button type="button" class="choice" data-harness="cursor"><strong>Cursor</strong><span>Agent Harness</span><span class="tag">cursor</span></button>
+            </div>
+          <div class="form-row" id="editHarnessModelRow" hidden><label for="editHarnessModel">执行模型</label><div class="workspace-picker"><select id="editHarnessModel"></select><button type="button" class="ghost-btn" id="refreshEditModels">刷新</button></div><p class="form-help" id="editHarnessModelHint"></p></div><div id="editWorkspaceOptions" class="workspace-options"><p class="form-help">文件空间由主电脑自动管理，无需填写。清空项目目录即可恢复自动管理。</p><details id="editProjectDetails"><summary>绑定已有项目（可选）</summary><div class="form-row"><label for="editAgentWorkspace">主电脑上的项目目录</label><div class="workspace-picker"><input id="editAgentWorkspace" placeholder="留空，使用自动管理的文件空间" /><button type="button" class="ghost-btn" id="chooseEditWorkspace">选择目录</button></div></div></details></div>
+          </div>
+          </div>
+
+
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="danger-btn" type="button" id="agentDelete" hidden>删除 Agent</button>
+        <div style="flex:1"></div>
+        <button class="ghost-btn" type="button" id="agentBack" hidden>上一步</button>
+        <button class="ghost-btn" type="button" data-close="agentOverlay">取消</button>
+        <button class="primary-btn" type="button" id="agentNext">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Overlay -->
+  <div class="overlay" id="authOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="authTitle">登录 Chorus</h2>
+          <p id="authDesc">登录同一账号，实时同步电脑和手机聊天</p>
+        </div>
+        <button class="modal-close" type="button" data-close="authOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="authError" class="auth-error" role="alert" aria-live="polite" hidden></p>
+        <div id="authLoggedOut">
+          <p class="auth-lead">用同一账号登录电脑和手机。手机实时查看聊天，发送的任务由电脑执行。</p>
+          <form id="authEmailForm" novalidate>
+            <div class="form-row" id="authNameRow" hidden><label for="regName">姓名</label><input id="regName" name="name" placeholder="你的姓名" maxlength="100" autocomplete="name" disabled /></div>
+            <div class="form-row"><label for="regEmail">邮箱</label><input id="regEmail" name="email" type="email" placeholder="you@example.com" autocomplete="username" required /></div>
+            <div class="form-row"><label for="regPassword">密码</label><div class="password-field"><input id="regPassword" name="password" type="password" placeholder="输入密码" autocomplete="current-password" aria-describedby="authPasswordHelp" required /><button type="button" class="password-toggle" data-password-target="regPassword" aria-label="显示密码" aria-controls="regPassword" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="password-eye-slash" d="m4 3 16 18"/></svg></button></div><p id="authPasswordHelp" class="form-help" hidden>建议使用至少 8 位，并组合字母、数字或符号。</p></div>
+            <div class="form-row" id="authConfirmRow" hidden><label for="regPasswordConfirm">确认密码</label><div class="password-field"><input id="regPasswordConfirm" name="password-confirm" type="password" placeholder="再次输入密码" autocomplete="new-password" disabled /><button type="button" class="password-toggle" data-password-target="regPasswordConfirm" aria-label="显示确认密码" aria-controls="regPasswordConfirm" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="password-eye-slash" d="m4 3 16 18"/></svg></button></div></div>
+            <div class="auth-choices"><button type="submit" class="auth-btn primary-fill" id="btnEmailLogin">登录</button></div>
+          </form>
+          <div class="auth-mode-switch"><span id="authModePrompt">还没有账号？</span><button type="button" class="auth-link" id="btnRegister">注册账号</button><button type="button" class="auth-link" id="btnAuthLoginMode" hidden>返回登录</button></div>
+          <div id="authGoogleChoices"><div class="auth-divider">其他登录方式</div><div class="auth-choices"><button type="button" class="auth-btn google" id="btnGoogleLogin"><span aria-hidden="true" style="font-weight:700;color:#4285F4">G</span><span id="googleLoginLabel">使用 Google 登录</span></button></div><p class="sub-hint">通过系统浏览器完成 Google 授权。</p></div>
+        </div>
+        <div id="authLoggedIn" hidden>
+          <p class="auth-lead">当前登录账号</p>
+          <div class="settings-row" style="margin-bottom:14px;">
+            <div class="label">
+              <strong id="authProfileName">—</strong>
+              <span id="authProfileEmail">—</span>
+            </div>
+            <span class="harness-pill none" id="authProviderPill">Google</span>
+          </div>
+          <div class="auth-choices"><button type="button" class="auth-btn" id="btnSwitchAccount">切换账号</button><button type="button" class="danger-btn" id="btnLogout">退出登录</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Overlay -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="settings-shell" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <nav class="settings-nav" id="settingsNav">
+        <div class="nav-title">设置</div>
+        <button type="button" class="active" data-settings="general">通用</button>
+        <button type="button" data-settings="appearance">外观</button>
+        <button type="button" data-settings="agent">Agent 默认</button>
+        <button type="button" data-settings="harness">主电脑与内核</button>
+        <button type="button" data-settings="models">模型与密钥</button>
+        <button type="button" data-settings="connection">中转站连接</button>
+        <button type="button" data-settings="approvals">审批与安全</button>
+        <button type="button" data-settings="notifications">通知</button>
+        <button type="button" data-settings="updates">更新与关于</button>
+      </nav>
+      <div class="settings-main">
+        <div class="settings-main-head">
+          <div>
+            <h2 id="settingsTitle">通用</h2>
+            <p id="settingsDesc">应用偏好与连接设置</p>
+          </div>
+          <button class="modal-close" type="button" data-close="settingsOverlay">×</button>
+        </div>
+        <div class="settings-content" id="settingsContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Room Modal -->
+  <div class="overlay" id="roomOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="roomModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="roomModalTitle">新建团队</h2>
+          <p>把多个 Agent 拉进同一房间讨论</p>
+        </div>
+        <button class="modal-close" type="button" data-close="roomOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label for="roomName">团队名称</label>
+          <input id="roomName" placeholder="例如：产品研发团队" maxlength="40" />
+        </div>
+        <div class="form-row">
+          <label>拉入 Agent</label>
+          <div class="agent-pick" id="roomAgentPick"></div>
+        </div>
+        <div class="form-row">
+          <label>发言规则</label>
+          <div class="choice-grid">
+            <button type="button" class="choice selected" data-rule="free" id="ruleFree">
+              <strong>自然群聊</strong>
+              <span>成员判断相关性后发言，可互相 @ 协作</span>
+            </button>
+            <button type="button" class="choice" data-rule="mention" id="ruleMention">
+              <strong>仅 @ 发言</strong>
+              <span>只有被点名的才回复</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost-btn" type="button" data-close="roomOverlay">取消</button>
+        <button class="primary-btn" type="button" id="roomCreate">创建团队</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="terminalOverlay">
+    <div class="modal terminal-modal" role="dialog" aria-modal="true" aria-labelledby="terminalTitle">
+      <div class="modal-head"><div><h2 id="terminalTitle">完整 CLI 终端</h2><p>原生交互、文件修改与工具审批。收起面板后会话继续运行。</p></div><button class="modal-close" type="button" data-close="terminalOverlay" aria-label="收起终端">×</button></div>
+      <div class="terminal-toolbar"><select id="terminalAgent" aria-label="终端 Agent"></select><span id="terminalStatus" role="status">未启动</span><button type="button" class="ghost-btn" id="terminalCloseSession">关闭当前终端</button></div>
+      <div id="terminalCanvas" aria-label="交互终端"></div>
+      <div id="terminalKeys"><button data-terminal-key="ctrlc" type="button">Ctrl C</button><button data-terminal-key="esc" type="button">Esc</button><button data-terminal-key="tab" type="button">Tab</button><button data-terminal-key="up" type="button">↑</button><button data-terminal-key="down" type="button">↓</button><button data-terminal-key="left" type="button">←</button><button data-terminal-key="right" type="button">→</button><button data-terminal-key="enter" type="button">Enter</button></div>
+      <div class="terminal-line"><input id="terminalLine" aria-label="发送到 CLI 的内容" placeholder="也可以在这里输入内容，再发送到 CLI…" maxlength="16384" /><button type="button" class="primary-btn" id="terminalSendLine">发送到 CLI</button></div>
+    </div>
+  </div>
+  <script src="conversation.js?v=0.5.8"></script>
+  <script src="model-client.js?v=0.5.8"></script>
+  <script src="gateway-client.js?v=0.5.8"></script>
+  <script src="relay-client.js?v=0.5.8"></script>
+  <script src="host-config.js?v=0.5.8"></script>
+  <script src="relay-auth.js?v=0.5.8"></script>
+  <script src="vendor/xterm.js?v=0.5.8"></script>
+  <script src="vendor/addon-fit.js?v=0.5.8"></script>
+  <script src="terminal-ui.js?v=0.5.8"></script>
+  <script src="updates.js?v=0.5.8"></script>
+  <script src="app.js?v=0.5.8"></script>
+  <script src="platform.js?v=0.5.8"></script>
+  <script src="update-ui.js?v=0.5.8"></script>
+</body>
+</html>

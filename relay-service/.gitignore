@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.*.example
+.deploy-cache/
+.deploy_commit
+.deploy_receipt
+bin/
+dist/
+*.exe
+*.test
+# Go 测试二进制也是 *.test，真实环境配置仍须保持忽略
+__pycache__/
+*.py[cod]
+coverage.out
+.idea/
+.vscode/
+.DS_Store

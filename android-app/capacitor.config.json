@@ -1,0 +1,25 @@
+{
+  "appId": "com.chorus.app",
+  "appName": "Chorus",
+  "webDir": "www",
+  "loggingBehavior": "none",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "minWebViewVersion": 109,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#292b35"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "overlaysWebView": false,
+      "backgroundColor": "#292b35"
+    }
+  }
+}

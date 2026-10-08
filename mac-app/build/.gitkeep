@@ -1,0 +1,4 @@
+/**
+ * 功能：占位图标说明。正式发布可替换为 1024x1024 icns。
+ * 当前 electron-builder 无自定义 icon 时使用 Electron 默认图标。
+ */

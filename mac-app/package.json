@@ -1,0 +1,89 @@
+{
+  "name": "chorus-mac",
+  "version": "0.5.8",
+  "description": "Chorus — 多 Agent 协作桌面（macOS）",
+  "main": "electron/main.js",
+  "author": "Chorus",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "postinstall": "install-electron && node ../scripts/prepare-pty.js",
+    "sync-ui": "node ../scripts/sync-ui.js",
+    "predev": "npm run sync-ui",
+    "dev": "electron .",
+    "test": "node --test electron/*.test.js ../scripts/*.test.js",
+    "prebuild": "npm run sync-ui && node ../scripts/prepare-pty.js",
+    "build": "electron-builder --mac dmg dir",
+    "build:dir": "npm run sync-ui && electron-builder --mac dir",
+    "pack": "npm run build"
+  },
+  "build": {
+    "appId": "com.chorus.desktop",
+    "productName": "Chorus",
+    "copyright": "Copyright © Chorus",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "!electron/**/*.test.js",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": "-",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "手机通过本地网络连接 Chorus，使用这台 Mac 上配置的 Agent 和终端。"
+      }
+    },
+    "dmg": {
+      "title": "Chorus ${version}",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "asarUnpack": [
+      "node_modules/node-pty/**"
+    ],
+    "afterPack": "build/prepare-pty.js"
+  },
+  "devDependencies": {
+    "electron": "44.4.4",
+    "electron-builder": "26.15.3"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "node-pty": "^1.1.0"
+  }
+}

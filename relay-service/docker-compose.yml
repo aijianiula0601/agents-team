@@ -1,0 +1,23 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  agents-team-relay:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5006:8000"
+    env_file:
+      - .env.dev
+    environment:
+      RELAY_ENV: dev
+      RELAY_LISTEN_ADDR: ":8000"
+      RELAY_MYSQL_HOST: host.docker.internal
+      RELAY_REDIS_ADDR: redis:6379
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis

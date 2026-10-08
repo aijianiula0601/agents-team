@@ -1,0 +1,118 @@
+/* ------------ 趋势分析：累计概览与区间曲线采用不同层级 --------------- */
+.workspace { max-width: 1660px; }
+.page-heading { margin-bottom: 25px; }
+.metric-card { padding: 18px 22px; min-height: 129px; }
+.metric-value { margin: 8px 0; font-size: 32px; }
+.trend-panel { margin-bottom: 24px; padding: 27px 28px 18px; }
+.trend-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; margin-bottom: 22px; }
+.trend-heading .eyebrow { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 8px; }
+.trend-heading h2 { margin: 0 0 5px; font-size: 20px; letter-spacing: -.5px; }
+.trend-heading p { margin: 0; font-size: 11px; color: #919b89; }
+.range-controls { display: flex; align-items: center; gap: 10px; padding-top: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.range-presets { display: flex; padding: 3px; background: #f0f3ec; border-radius: 7px; }
+.range-presets button { background: none; border: 0; border-radius: 5px; padding: 6px 10px; font-size: 11px; color: #909b87; white-space: nowrap; }
+.range-presets button.active { background: #fff; color: #3c6047; box-shadow: 0 1px 3px #29432b0c; font-weight: 600; }
+.date-picker { position: relative; }
+.date-picker>summary { list-style: none; padding: 9px 11px; border: 1px solid #e1e7dc; border-radius: 7px; background: white; font-size: 10px; color: #6f7e62; cursor: pointer; white-space: nowrap; }
+.date-picker>summary::-webkit-details-marker { display: none; }
+.date-picker[open]>summary { border-color: #9ab38a; box-shadow: 0 0 0 2px #e8efdf; }
+.date-popover { position: absolute; right: 0; top: calc(100% + 10px); z-index: 8; width: 280px; border: 1px solid #dfe7d8; border-radius: 11px; padding: 20px; background: white; box-shadow: 0 14px 45px #30442b20; }
+.date-popover-heading { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+.date-popover-heading span { font-size: 10px; color: #9aa58f; font-weight: 400; }
+.date-popover label { margin-bottom: 14px; font-size: 11px; }
+.date-popover input { width: 100%; font-size: 12px; }
+.date-popover .privacy-note { margin-bottom: 16px; }
+.trend-dimensions { display: flex; gap: 24px; border-bottom: 1px solid #eaf0e4; margin-bottom: 22px; }
+.trend-dimensions button { border: 0; padding: 0 2px 13px; background: none; color: #9aa591; font-size: 12px; font-weight: 550; position: relative; }
+.trend-dimensions button.active { color: #315b42; }
+.trend-dimensions button.active:after { position: absolute; content: ""; left: 0; right: 0; bottom: -1px; height: 2px; background: #517a50; border-radius: 2px; }
+.trend-legend { display: flex; flex-wrap: wrap; gap: 36px; margin-bottom: 12px; }
+.legend-item { display: grid; grid-template-columns: auto auto; column-gap: 8px; row-gap: 7px; background: none; border: 0; padding: 0; text-align: left; min-width: 95px; }
+.legend-description { display: flex; align-items: center; gap: 7px; grid-column: 1 / 3; color: #87957b; font-size: 11px; }
+.legend-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.legend-item .legend-dot { color: var(--series); }
+.legend-item strong { font-size: 23px; font-weight: 600; letter-spacing: -.6px; color: #3e5039; }
+.legend-item small { font-size: 9px; align-self: end; padding-bottom: 3px; color: #a3ad99; }
+.legend-item.muted-series { opacity: .4; }
+.legend-item.muted-series .legend-description { text-decoration: line-through; }
+.series-0 { --series: #5c8c72; color: var(--series); }
+.series-1 { --series: #799ccb; color: var(--series); }
+.series-2 { --series: #d5a069; color: var(--series); }
+.chart-wrap { width: 100%; }
+.trend-svg { display: block; width: 100%; height: auto; overflow: visible; outline-offset: 5px; }
+.chart-grid-line { stroke: #eaf0e4; stroke-width: 1; stroke-dasharray: 3 5; }
+.chart-axis-label { fill: #a0ac97; font-family: inherit; font-size: 10px; }
+.chart-line { fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.chart-point { fill: currentColor; stroke: white; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.chart-crosshair { stroke: #aebba3; stroke-width: 1; stroke-dasharray: 4 4; }
+.chart-inspector { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 18px; padding: 10px 0 3px; min-height: 32px; font-size: 10px; }
+.inspector-date { margin-right: auto; color: #8b9980; font-weight: 500; }
+.inspector-value { display: inline-flex; align-items: center; gap: 6px; }
+.inspector-value strong { color: #617357; font-weight: 550; }
+.chart-note { font-size: 10px; color: #9aa68e; line-height: 1.85; margin: 12px 0 0; padding-top: 13px; border-top: 1px solid #edf1e8; }
+.secondary-metrics { gap: 0; border: 1px solid var(--line); background: #fff; border-radius: 11px; overflow: hidden; }
+.secondary-metrics .metric-card { border: 0; border-radius: 0; min-height: 116px; padding: 19px 23px; }
+.secondary-metrics .metric-card+.metric-card { border-left: 1px solid var(--line); }
+.secondary-metrics .metric-symbol { display: none; }
+.secondary-metrics .metric-value { font-size: 26px; }
+.daily-data>summary { cursor: pointer; font-size: 12px; color: #7f9171; padding: 4px 2px 16px; }
+.daily-data .table-wrap { max-height: 420px; overflow: auto; }
+.daily-data th { position: sticky; top: 0; }
+
+/* ------------ 账号管理：仅超级管理员可见操作，危险操作单独确认 --------------- */
+.account-management-notice { font-size: 11px; color: #87967a; }
+.account-actions { display: flex; align-items: center; gap: 13px; }
+.account-action { border: 0; padding: 5px 0; background: transparent; color: #5c8051; font-size: 11px; white-space: nowrap; }
+.account-action:hover { text-decoration: underline; }
+.account-action.delete-action { color: #b0826e; }
+.protected-account { font-size: 10px; color: #9eaa93; }
+.account-dialog { max-width: 510px; }
+.account-target { display: flex; align-items: center; gap: 12px; padding: 15px; margin: 19px 0; border: 1px solid #e7ecdf; border-radius: 9px; background: #f7f9f3; }
+.account-target>div { min-width: 0; }
+.account-target strong { display: block; font-size: 13px; font-weight: 550; overflow-wrap: anywhere; }
+.account-target div>span { display: block; margin-top: 5px; color: #909e84; font-size: 11px; overflow-wrap: anywhere; }
+.account-dialog label { margin-bottom: 18px; }
+.account-dialog>.muted { margin-bottom: 22px; }
+.account-dialog input[readonly] { background: #f5f7f1; color: #97a28b; }
+.account-dialog .privacy-note { margin-bottom: 18px; }
+.account-dialog .form-error { margin-top: 18px; }
+.danger-solid { background: #ad6355; color: white; }
+.danger-solid:hover { background: #944f43; }
+.profile-info>span { font-size: 9px; }
+
+@media (max-width: 1150px) {
+  .range-controls { max-width: 260px; }
+  .range-controls .date-picker { order: -1; }
+  .trend-heading { gap: 15px; }
+  .trend-legend { gap: 28px; }
+}
+@media (max-width: 720px) {
+  .metric-card { padding: 15px; min-height: 123px; }
+  .metric-value { font-size: 29px; }
+  .trend-panel { padding: 22px 16px 16px; margin-bottom: 18px; }
+  .trend-heading { flex-direction: column; gap: 17px; margin-bottom: 18px; }
+  .trend-heading h2 { font-size: 20px; }
+  .trend-heading .muted { font-size: 10px; }
+  .range-controls { max-width: none; width: 100%; justify-content: space-between; gap: 8px; }
+  .range-controls .date-picker { order: 0; }
+  .range-presets button { padding: 6px 7px; font-size: 10px; }
+  .date-picker>summary { font-size: 9px; padding: 9px 7px; }
+  .date-popover { right: -1px; width: min(280px,calc(100vw - 64px)); }
+  .trend-dimensions { gap: 21px; margin-bottom: 20px; }
+  .trend-dimensions button { font-size: 11px; }
+  .trend-legend { gap: 17px; margin-bottom: 19px; justify-content: space-between; }
+  .legend-item { min-width: 65px; column-gap: 5px; }
+  .legend-description { font-size: 10px; gap: 5px; }
+  .legend-item strong { font-size: 20px; grid-column: 1 / 3; }
+  .legend-item small { display: none; }
+  .trend-svg { min-height: 156px; }
+  .chart-axis-label { font-size: 13px; }
+  .chart-inspector { gap: 9px; justify-content: flex-start; font-size: 9px; }
+  .inspector-date { width: 100%; margin-right: 0; }
+  .chart-note { font-size: 9px; }
+  .secondary-metrics .metric-card { min-height: 107px; padding: 17px; }
+  .secondary-metrics .metric-card:nth-child(3) { border-left: 0; }
+  .secondary-metrics .metric-card:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .secondary-metrics .metric-value { font-size: 24px; }
+  .account-dialog { padding: 22px; }
+}

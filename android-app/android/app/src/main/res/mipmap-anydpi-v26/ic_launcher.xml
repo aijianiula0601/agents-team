@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 13 主题图标使用 mipmap-anydpi-v33 里的 monochrome 资源。 -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MonochromeLauncherIcon">
+    <background android:drawable="@color/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/chorus_mark"/>
+</adaptive-icon>

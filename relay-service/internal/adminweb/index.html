@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Chorus · 中转站管理</title>
+  <link rel="stylesheet" href="./assets/app.css">
+  <link rel="stylesheet" href="./assets/analytics.css">
+  <script src="./assets/analytics.js" defer></script>
+  <script src="./assets/accounts.js" defer></script>
+  <script src="./assets/app.js" defer></script>
+</head>
+<body>
+  <div id="boot-screen" class="boot-screen" role="status">正在连接中转站…</div>
+  <main id="auth-view" class="auth-layout" hidden>
+    <section class="auth-story">
+      <a class="brand auth-brand" href="./"><span class="brand-mark" aria-hidden="true">C</span><span>Chorus<span class="brand-caption">中转站管理</span></span></a>
+      <div class="auth-story-content"><div class="eyebrow">CONNECTED WORKSPACE</div><h1>让每一次协作，<br>清晰可见。</h1><p>在一个地方掌握账号、设备与任务运行状态，<br>让每个客户端及时获得最新版本。</p><div class="auth-features"><span>账号与设备</span><span>任务运行情况</span><span>应用版本发布</span></div></div>
+      <span class="auth-footer">Chorus Relay Console</span>
+    </section>
+    <section class="auth-card-wrap">
+      <form id="auth-form" class="auth-card">
+        <div class="eyebrow">WELCOME TO CHORUS</div><h2 id="auth-title">登录管理页面</h2><p id="auth-description" class="muted">使用你的账号，查看协作运行情况。</p>
+        <label id="name-field" hidden>姓名<input id="auth-name" name="name" autocomplete="name" maxlength="80" placeholder="你的姓名"></label>
+        <label>邮箱<input id="auth-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="name@example.com"></label>
+        <label>密码<input id="auth-password" name="password" type="password" autocomplete="current-password" required maxlength="72" placeholder="8–72 字节密码"></label>
+        <label id="confirm-field" hidden>确认密码<input id="auth-confirm" name="confirmPassword" type="password" autocomplete="new-password" maxlength="128" placeholder="再次输入密码"></label>
+        <p id="auth-error" class="form-error" role="alert" hidden></p>
+        <button id="auth-submit" class="button primary full" type="submit">登录</button>
+        <p class="auth-switch"><span id="auth-switch-label">还没有账号？</span><button id="auth-toggle" class="text-button" type="button">创建账号</button></p>
+        <p class="privacy-note">普通账号仅能查看自己的数据；版本发布由管理员操作。</p>
+      </form>
+    </section>
+  </main>
+  <div id="console-view" class="console-layout" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">C</span><span>Chorus<span class="brand-caption">中转站管理</span></span></a>
+      <div class="sidebar-label">工作空间</div>
+      <nav class="navigation" aria-label="管理功能">
+        <button class="nav-item active" data-tab="overview" type="button"><span class="nav-icon" aria-hidden="true">▦</span>运行总览</button>
+        <button class="nav-item" data-tab="accounts" type="button"><span class="nav-icon" aria-hidden="true">◉</span>账号与设备</button>
+        <button class="nav-item" data-tab="tasks" type="button"><span class="nav-icon" aria-hidden="true">≡</span>任务统计</button>
+        <button class="nav-item" data-tab="releases" type="button"><span class="nav-icon" aria-hidden="true">↥</span>版本发布</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="scope-card"><span class="status-dot"></span><span id="scope-label">个人工作空间</span><small id="scope-description">仅展示当前账号数据</small></div><div class="profile"><span id="profile-avatar" class="avatar">C</span><div class="profile-info"><strong id="profile-name"></strong><span id="profile-role"></span></div><button id="logout-button" class="icon-button" type="button" aria-label="退出登录" title="退出登录">↪</button></div></div>
+    </aside>
+    <div class="main-area">
+      <header class="topbar"><div class="breadcrumb">工作空间 <span>/</span> <strong id="breadcrumb-current">运行总览</strong></div><div class="topbar-meta"><span id="last-updated">准备就绪</span><button id="refresh-button" class="button subtle" type="button">↻ 刷新</button></div></header>
+      <main id="workspace" class="workspace" tabindex="-1">
+        <div class="page-heading"><div><div class="eyebrow" id="page-eyebrow">WORKSPACE OVERVIEW</div><h1 id="page-title">运行总览</h1><p id="page-description" class="muted">账号、设备与任务的运行情况，一目了然。</p></div><button id="upload-open" class="button primary" type="button" hidden>＋ 上传新版本</button></div>
+        <div id="page-error" class="notice error" role="alert" hidden></div>
+        <div id="page-loading" class="loading-state" role="status" hidden><span class="spinner"></span>正在加载数据…</div>
+        <section id="overview-panel" class="tab-panel" aria-label="运行总览"></section>
+        <section id="accounts-panel" class="tab-panel" aria-label="账号与设备" hidden>
+          <div id="account-management-notice" class="notice account-management-notice" hidden>账号资料、密码与删除操作仅由超级管理员管理。修改邮箱或重置密码后，该账号需要重新登录。</div>
+          <div class="panel-toolbar"><div class="segmented" aria-label="列表类型"><button id="accounts-switch" class="active" type="button">账号</button><button id="devices-switch" type="button">设备</button></div><form id="accounts-search" class="search-form"><input name="q" type="search" maxlength="100" aria-label="搜索账号或设备" placeholder="搜索邮箱、名称"><button class="button subtle" type="submit">搜索</button></form></div><div id="accounts-content"></div><div id="accounts-pagination" class="pagination"></div>
+        </section>
+        <section id="tasks-panel" class="tab-panel" aria-label="任务统计" hidden>
+          <div id="task-metrics" class="metrics-grid"></div><div class="panel-toolbar"><label class="inline-label">任务状态<select id="task-status"><option value="">全部状态</option><option value="pending">待处理</option><option value="running">执行中</option><option value="done">已完成</option><option value="failed">失败</option></select></label><form id="tasks-search" class="search-form"><input name="q" type="search" maxlength="100" aria-label="搜索任务" placeholder="搜索任务 ID、账号邮箱"><button class="button subtle" type="submit">搜索</button></form></div><div id="tasks-content"></div><div id="tasks-pagination" class="pagination"></div>
+        </section>
+        <section id="releases-panel" class="tab-panel" aria-label="版本发布" hidden><div class="notice release-notice">上传安装包后先保存为草稿，发布后客户端才会检测到新版本。撤回后停止向客户端提供该版本。</div><div id="release-storage" class="storage-guide" hidden></div><div class="panel-toolbar"><label class="inline-label">应用平台<select id="release-platform"><option value="">所有平台</option><option value="mac">macOS · DMG</option><option value="android">Android · APK</option></select></label><span class="muted">正式发布渠道</span></div><div id="releases-content"></div><div id="releases-pagination" class="pagination"></div></section>
+      </main>
+      <footer class="workspace-footer">Chorus Relay <span>让协作保持连接</span></footer>
+    </div>
+  </div>
+  <dialog id="upload-dialog" aria-labelledby="upload-title">
+    <form id="upload-form" class="upload-form"><div class="dialog-header"><div><div class="eyebrow">RELEASE MANAGEMENT</div><h2 id="upload-title">上传新版本</h2></div><button id="upload-close" class="icon-button" type="button" aria-label="关闭">×</button></div><p class="muted">先上传为草稿，确认版本信息后再发布。</p>
+      <div class="form-row"><label>应用平台<select id="upload-platform" name="platform"><option value="mac">macOS · DMG</option><option value="android">Android · APK</option></select></label><label>适用架构<select id="upload-arch" name="arch"><option value="arm64">Apple Silicon · arm64</option><option value="x64">Intel · x64</option><option value="universal">通用 · universal</option></select></label></div>
+      <div class="form-row"><label>版本号<input name="version" required maxlength="29" placeholder="例如 1.2.0" pattern="(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})"></label><label>构建号<input name="buildNumber" type="number" required min="1" step="1" max="2100000000" placeholder="例如 120"></label></div>
+      <label>更新说明<textarea name="notes" rows="4" required maxlength="8192" placeholder="介绍新功能、改进及修复内容"></textarea></label>
+      <label class="file-field">安装包<input id="upload-file" name="file" type="file" accept=".dmg"><span id="file-description" class="muted">选择对应平台的 .dmg 文件</span></label>
+      <details class="manual-upload"><summary>安装包较大时，可以手动放到服务器再登记</summary><ol id="manual-steps" class="manual-steps"></ol><label>服务器上的文件名<input id="import-name" name="serverFile" autocomplete="off" placeholder="例如 Chorus.dmg"></label><button id="import-submit" class="button subtle" type="button">登记服务器上的文件</button></details>
+      <p class="privacy-note">macOS 必须提高三段版本号（例如 1.2.0 → 1.2.1）。Android 必须提高构建号且版本名不得回退，可用相同版本名发布新构建；APK 必须沿用原签名才能覆盖安装。网页上传按约 16MB 一段发送，上传过程中可以中断。</p><p id="upload-error" class="form-error" role="alert" hidden></p><div id="upload-progress-wrap" hidden><div class="progress-label"><span>正在上传</span><span id="upload-progress-label">0%</span></div><progress id="upload-progress" max="100" value="0"></progress></div><div class="dialog-actions"><button id="upload-cancel" class="button subtle" type="button">取消</button><button id="upload-submit" class="button primary" type="submit">上传并保存草稿</button></div>
+    </form>
+  </dialog>
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-message" class="muted"></p><div class="dialog-actions"><button id="confirm-cancel" class="button subtle" type="button">取消</button><button id="confirm-action" class="button primary" type="button">确认</button></div></dialog>
+  <dialog id="account-dialog" class="account-dialog" aria-labelledby="account-dialog-title">
+    <form id="account-form">
+      <div class="dialog-header"><div><div class="eyebrow">ACCOUNT MANAGEMENT</div><h2 id="account-dialog-title">编辑账号</h2></div><button id="account-dialog-close" class="icon-button" type="button" aria-label="关闭账号操作">×</button></div>
+      <div class="account-target"><span id="account-target-avatar" class="avatar">账</span><div><strong id="account-target-name"></strong><span id="account-target-email"></span></div></div>
+      <p id="account-dialog-description" class="muted"></p>
+      <div id="account-edit-fields"><label>姓名<input id="account-edit-name" name="name" maxlength="128" autocomplete="off" placeholder="账号显示名称"></label><label>邮箱<input id="account-edit-email" name="email" type="email" maxlength="254" autocomplete="off" placeholder="name@example.com"></label><p id="account-provider-note" class="privacy-note"></p></div>
+      <div id="account-password-fields" hidden><label>新密码<input id="account-new-password" name="password" type="password" autocomplete="new-password" maxlength="72" placeholder="8–72 个 UTF-8 字节"></label><label>再次输入新密码<input id="account-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" maxlength="72" placeholder="再次输入新密码"></label><p class="privacy-note">密码不会显示在操作记录中。请通过安全渠道告知账号本人。</p></div>
+      <div id="account-delete-fields" hidden><div class="notice error">此操作不可恢复。账号、设备、邀请码、聊天快照、任务及执行租约将一并删除，所有会话立即失效。</div><label>输入完整账号邮箱以确认<input id="account-delete-email" name="confirmEmail" type="email" autocomplete="off" placeholder="输入上方完整邮箱"></label></div>
+      <p id="account-action-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button id="account-dialog-cancel" class="button subtle" type="button">取消</button><button id="account-dialog-submit" class="button primary" type="submit">保存修改</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

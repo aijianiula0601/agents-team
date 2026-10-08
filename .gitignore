@@ -1,0 +1,39 @@
+.DS_Store
+*.log
+node_modules/
+
+# 本地配置与签名材料不入库，仅保留脱敏示例。
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.p12
+*.p8
+*.key
+
+# Mac 打包产物
+mac-app/dist/
+mac-app/out/
+
+# Android / Gradle 构建产物与本机 SDK 路径
+android-app/android/.gradle/
+android-app/android/**/build/
+android-app/android/local.properties
+android-app/android/.idea/
+android-app/android/**/*.iml
+android-app/android/captures/
+android-app/android/.cxx/
+android-app/.apk-build-lock/
+
+# 安装包不入库，按 README 在本机构建
+*.apk
+*.aab
+*.keystore
+*.jks
+keystore.properties
+*.dmg
+*.blockmap
+
+# 本地交付包与验收截图
+dist/

@@ -1,0 +1,30 @@
+{
+  "name": "chorus-android",
+  "version": "0.5.8",
+  "description": "Chorus — 多 Agent 协作（Android）",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "postinstall": "node scripts/patch-capacitor-cli.js",
+    "sync-ui": "node ../scripts/sync-ui.js",
+    "prebuild": "npm run sync-ui",
+    "cap:sync": "npm run sync-ui && npx cap sync android",
+    "open": "npx cap open android",
+    "build:apk": "bash ../scripts/build-apk.sh",
+    "build:apk:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+    "build:apk:release": "bash ../scripts/build-apk.sh"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/app": "^6.0.3",
+    "@capacitor/browser": "^6.0.6",
+    "@capacitor/core": "^6.2.2",
+    "@capacitor/status-bar": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.2"
+  },
+  "overrides": {
+    "tar": "^7.5.21"
+  }
+}

@@ -1,0 +1,3282 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="system">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chorus — Mac 桌面原型</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="dark"] {
+      --bg-desk: #1a1c1e;
+      --bg-window: #23262a;
+      --bg-sidebar: #1e2124;
+      --bg-chat: #272b30;
+      --bg-panel: #1f2226;
+      --bg-elevated: #2e3339;
+      --bg-input: #1a1d21;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      --text: #eceef0;
+      --text-dim: #9aa3ad;
+      --text-faint: #6b737c;
+      --accent: #e8a54b;
+      --accent-soft: rgba(232, 165, 75, 0.15);
+      --accent-2: #5ec2a8;
+      --danger: #e06c75;
+      --codex: #7aa2f7;
+      --claude: #d4a574;
+      --cursor: #6a9e18;
+      --you-bubble: #3a3428;
+      --you-border: rgba(232, 165, 75, 0.25);
+      --menubar-bg: rgba(20, 22, 24, 0.72);
+      --titlebar-from: #2a2e33;
+      --titlebar-to: #24282c;
+      --modal-bg: #2a2e34;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+      --font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --display: "Fraunces", Georgia, serif;
+      --desk-glow-1: rgba(232, 165, 75, 0.08);
+      --desk-glow-2: rgba(94, 194, 168, 0.06);
+    }
+
+    [data-theme="light"] {
+      --bg-desk: #d8dce2;
+      --bg-window: #f4f5f7;
+      --bg-sidebar: #eef0f3;
+      --bg-chat: #fafbfc;
+      --bg-panel: #f0f2f5;
+      --bg-elevated: #ffffff;
+      --bg-input: #ffffff;
+      --border: rgba(20, 24, 30, 0.08);
+      --border-strong: rgba(20, 24, 30, 0.14);
+      --text: #1c2128;
+      --text-dim: #5b6572;
+      --text-faint: #8a93a0;
+      --accent: #c8842a;
+      --accent-soft: rgba(200, 132, 42, 0.12);
+      --accent-2: #2a9b7e;
+      --danger: #c9444f;
+      --codex: #3d6fd9;
+      --claude: #b07a45;
+      --cursor: #5a8f12;
+      --you-bubble: #fff6e8;
+      --you-border: rgba(200, 132, 42, 0.35);
+      --menubar-bg: rgba(236, 238, 241, 0.88);
+      --titlebar-from: #f7f8fa;
+      --titlebar-to: #eef0f3;
+      --modal-bg: #ffffff;
+      --shadow: 0 24px 80px rgba(30, 40, 55, 0.18);
+      --desk-glow-1: rgba(200, 132, 42, 0.1);
+      --desk-glow-2: rgba(42, 155, 126, 0.08);
+    }
+
+    @media (prefers-color-scheme: light) {
+      [data-theme="system"] {
+        --bg-desk: #d8dce2;
+        --bg-window: #f4f5f7;
+        --bg-sidebar: #eef0f3;
+        --bg-chat: #fafbfc;
+        --bg-panel: #f0f2f5;
+        --bg-elevated: #ffffff;
+        --bg-input: #ffffff;
+        --border: rgba(20, 24, 30, 0.08);
+        --border-strong: rgba(20, 24, 30, 0.14);
+        --text: #1c2128;
+        --text-dim: #5b6572;
+        --text-faint: #8a93a0;
+        --accent: #c8842a;
+        --accent-soft: rgba(200, 132, 42, 0.12);
+        --accent-2: #2a9b7e;
+        --danger: #c9444f;
+        --codex: #3d6fd9;
+        --claude: #b07a45;
+        --cursor: #5a8f12;
+        --you-bubble: #fff6e8;
+        --you-border: rgba(200, 132, 42, 0.35);
+        --menubar-bg: rgba(236, 238, 241, 0.88);
+        --titlebar-from: #f7f8fa;
+        --titlebar-to: #eef0f3;
+        --modal-bg: #ffffff;
+        --shadow: 0 24px 80px rgba(30, 40, 55, 0.18);
+        --desk-glow-1: rgba(200, 132, 42, 0.1);
+        --desk-glow-2: rgba(42, 155, 126, 0.08);
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      [data-theme="system"] {
+        --bg-desk: #1a1c1e;
+        --bg-window: #23262a;
+        --bg-sidebar: #1e2124;
+        --bg-chat: #272b30;
+        --bg-panel: #1f2226;
+        --bg-elevated: #2e3339;
+        --bg-input: #1a1d21;
+        --border: rgba(255, 255, 255, 0.07);
+        --border-strong: rgba(255, 255, 255, 0.12);
+        --text: #eceef0;
+        --text-dim: #9aa3ad;
+        --text-faint: #6b737c;
+        --accent: #e8a54b;
+        --accent-soft: rgba(232, 165, 75, 0.15);
+        --accent-2: #5ec2a8;
+        --danger: #e06c75;
+        --codex: #7aa2f7;
+        --claude: #d4a574;
+        --cursor: #a3e635;
+        --you-bubble: #3a3428;
+        --you-border: rgba(232, 165, 75, 0.25);
+        --menubar-bg: rgba(20, 22, 24, 0.72);
+        --titlebar-from: #2a2e33;
+        --titlebar-to: #24282c;
+        --modal-bg: #2a2e34;
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+        --desk-glow-1: rgba(232, 165, 75, 0.08);
+        --desk-glow-2: rgba(94, 194, 168, 0.06);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, var(--desk-glow-1), transparent 50%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, var(--desk-glow-2), transparent 45%),
+        var(--bg-desk);
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.25s ease, color 0.2s ease;
+    }
+
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    ul { list-style: none; }
+
+    /* ---- Desktop chrome ---- */
+    .desk {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 28px 20px 40px;
+    }
+
+    .menubar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: rgba(20, 22, 24, 0.72);
+      background: var(--menubar-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-dim);
+      z-index: 50;
+    }
+    .menubar-left { display: flex; gap: 16px; align-items: center; }
+    .menubar-left strong { color: var(--text); font-weight: 600; }
+    .menubar-right { display: flex; gap: 14px; align-items: center; }
+
+    .window {
+      width: min(1280px, 96vw);
+      height: min(820px, calc(100vh - 72px));
+      margin-top: 12px;
+      background: var(--bg-window);
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: windowIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes windowIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.985); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .titlebar {
+      height: 46px;
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      align-items: center;
+      padding: 0 14px;
+      background: linear-gradient(180deg, var(--titlebar-from), var(--titlebar-to));
+      border-bottom: 1px solid var(--border);
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+    }
+    .traffic {
+      display: flex;
+      gap: 8px;
+      padding-left: 4px;
+    }
+    .traffic span {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: block;
+    }
+    .traffic .r { background: #ff5f57; }
+    .traffic .y { background: #febc2e; }
+    .traffic .g { background: #28c840; }
+    .title-center {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+    .title-center em {
+      font-style: normal;
+      color: var(--text);
+      font-family: var(--display);
+      font-weight: 600;
+    }
+    .title-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .tb-btn {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 7px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 12px;
+      transition: 0.15s ease;
+    }
+    .tb-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .tb-btn.primary {
+      background: var(--accent);
+      color: #1a1408;
+      border-color: transparent;
+      font-weight: 600;
+    }
+    .tb-btn.primary:hover { filter: brightness(1.05); }
+
+    .body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      min-height: 0;
+      transition: grid-template-columns 0.22s ease;
+    }
+    .body.panel-collapsed {
+      grid-template-columns: 240px 1fr 0px;
+    }
+
+    /* ---- Sidebar ---- */
+    .sidebar {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .side-brand {
+      padding: 16px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background:
+        conic-gradient(from 210deg, var(--accent), var(--accent-2), var(--accent));
+      display: grid;
+      place-items: center;
+      font-family: var(--display);
+      font-size: 14px;
+      color: #1a1408;
+      font-weight: 600;
+    }
+    .side-brand h1 {
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .side-brand small {
+      display: block;
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 1px;
+    }
+
+    .side-section {
+      padding: 8px 10px 4px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .side-section button {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      color: var(--text-dim);
+      font-size: 16px;
+      line-height: 1;
+    }
+    .side-section button:hover { background: var(--bg-elevated); color: var(--text); }
+
+    .side-list { padding: 0 8px 8px; overflow-y: auto; }
+
+    .room-item, .agent-item {
+      width: 100%;
+      text-align: left;
+      padding: 9px 10px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2px;
+      transition: 0.12s ease;
+    }
+    .room-item:hover, .agent-item:hover { background: rgba(255,255,255,0.04); }
+    .room-item.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .room-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text-faint);
+      flex-shrink: 0;
+    }
+    .room-item.active .dot { background: var(--accent); }
+    .room-item .meta { min-width: 0; flex: 1; }
+    .room-item .name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .room-item .sub { font-size: 11px; color: var(--text-faint); margin-top: 1px; }
+    .room-item.active .sub { color: rgba(232, 165, 75, 0.7); }
+
+    .agent-item .avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .agent-item .name { font-size: 13px; font-weight: 500; }
+    .agent-item .harness {
+      font-size: 10px;
+      color: var(--text-faint);
+      font-family: var(--mono);
+    }
+    .agent-item.selected { background: rgba(255,255,255,0.06); }
+
+    .side-footer {
+      margin-top: auto;
+      padding: 8px 10px 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .account-chip {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      text-align: left;
+      transition: 0.12s ease;
+    }
+    .account-chip:hover { background: rgba(255,255,255,0.05); }
+    .account-chip .av {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .account-chip .av img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .account-chip .meta { min-width: 0; }
+    .account-chip .name {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .account-chip .sub {
+      font-size: 10px;
+      color: var(--text-faint);
+      margin-top: 1px;
+    }
+    .settings-icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      color: var(--text-faint);
+      font-size: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1px solid transparent;
+    }
+    .settings-icon-btn:hover {
+      color: var(--text);
+      background: var(--bg-elevated);
+      border-color: var(--border);
+    }
+
+    .auth-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .auth-btn {
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .auth-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .auth-btn.google {
+      background: #fff;
+      color: #1f1f1f;
+      border-color: #dadce0;
+    }
+    .auth-btn.google:hover { background: #f7f8f9; }
+    .auth-btn.primary-fill {
+      background: var(--accent);
+      color: #1a1408;
+      border-color: transparent;
+      font-weight: 600;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0 10px;
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ---- Settings shell ---- */
+    .settings-shell {
+      width: min(860px, 96vw);
+      height: min(640px, 86vh);
+      background: var(--modal-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      overflow: hidden;
+      animation: modalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .settings-nav {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .settings-nav .nav-title {
+      font-family: var(--display);
+      font-size: 18px;
+      padding: 4px 10px 14px;
+      font-weight: 600;
+    }
+    .settings-nav button {
+      text-align: left;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .settings-nav button:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .settings-nav button.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .settings-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--bg-window);
+    }
+    .settings-main-head {
+      padding: 18px 22px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .settings-main-head h2 {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .settings-main-head p {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .settings-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px 28px;
+    }
+    .settings-block {
+      margin-bottom: 22px;
+    }
+    .settings-block h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+    .settings-row .label strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .settings-row .label span {
+      font-size: 12px;
+      color: var(--text-faint);
+      line-height: 1.35;
+    }
+    .segmented {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 9px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      gap: 2px;
+    }
+    .segmented button {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+    .segmented button.on {
+      background: var(--accent);
+      color: #1a1408;
+      font-weight: 600;
+    }
+    .toggle {
+      width: 42px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(128,128,128,0.35);
+      position: relative;
+      border: none;
+      flex-shrink: 0;
+      transition: 0.15s;
+    }
+    .toggle.on { background: var(--accent); }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .toggle.on::after { left: 21px; }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .status-dot.ok { background: var(--accent-2); }
+    .status-dot.warn { background: var(--accent); }
+    .status-dot.off { background: var(--text-faint); }
+
+    .edit-section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-faint);
+      margin: 16px 0 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .edit-section-title:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .danger-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 9px;
+      border: 1px solid rgba(224, 108, 117, 0.4);
+      color: var(--danger);
+      font-size: 13px;
+      background: rgba(224, 108, 117, 0.08);
+    }
+    .danger-btn:hover { background: rgba(224, 108, 117, 0.16); }
+    .modal.edit-wide { width: min(620px, 100%); max-height: min(720px, 90vh); display: flex; flex-direction: column; }
+    .modal.edit-wide .modal-body { overflow-y: auto; flex: 1; }
+
+    /* ---- Chat ---- */
+    .chat {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--bg-chat);
+    }
+    .chat-header {
+      height: 54px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .chat-header h2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .chat-header p {
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-top: 2px;
+    }
+    .member-stack {
+      display: flex;
+      align-items: center;
+    }
+    .member-stack .av {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-chat);
+      margin-left: -8px;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .member-stack .av:first-child { margin-left: 0; }
+    .member-stack .more {
+      margin-left: 8px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .day-sep {
+      align-self: center;
+      font-size: 11px;
+      color: var(--text-faint);
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.2);
+      margin: 4px 0 8px;
+    }
+
+    .msg {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      max-width: 92%;
+      animation: msgIn 0.28s ease;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .msg.you {
+      align-self: flex-end;
+      grid-template-columns: 1fr;
+      max-width: 78%;
+    }
+    .msg .av {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .msg-bubble {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 14px 14px 14px 4px;
+      padding: 10px 12px 11px;
+    }
+    .msg.you .msg-bubble {
+      background: var(--you-bubble);
+      border-color: var(--you-border);
+      border-radius: 14px 14px 4px 14px;
+    }
+    .msg-head {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .msg-head .who { font-size: 13px; font-weight: 600; }
+    .msg-head .when { font-size: 11px; color: var(--text-faint); }
+    .msg-head .badge {
+      font-size: 10px;
+      font-family: var(--mono);
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-dim);
+    }
+    .msg-body {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+    .msg-body .mention {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .msg-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.25);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .chip.live { color: var(--accent-2); border-color: rgba(94, 194, 168, 0.3); }
+
+    .typing {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      font-size: 12px;
+      color: var(--text-faint);
+      min-height: 24px;
+    }
+    .typing-dots span {
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text-faint);
+      margin-right: 3px;
+      animation: blink 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.25; }
+      40% { opacity: 1; }
+    }
+
+    .composer {
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .composer-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 10px 12px;
+      transition: border-color 0.15s;
+    }
+    .composer-box:focus-within { border-color: rgba(232, 165, 75, 0.45); }
+    .composer-box textarea {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      resize: none;
+      min-height: 52px;
+      max-height: 140px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .composer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .composer-tools { display: flex; gap: 6px; }
+    .tool-btn {
+      height: 28px;
+      padding: 0 9px;
+      border-radius: 7px;
+      font-size: 12px;
+      color: var(--text-dim);
+      border: 1px solid transparent;
+    }
+    .tool-btn:hover { background: var(--bg-elevated); border-color: var(--border); color: var(--text); }
+    .send-btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #1a1408;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .mention-pop {
+      position: absolute;
+      bottom: 100%;
+      left: 16px;
+      right: 16px;
+      margin-bottom: 8px;
+      background: #32373e;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 6px;
+      display: none;
+      z-index: 20;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .mention-pop.open { display: block; }
+    .mention-pop button {
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 7px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .mention-pop button:hover, .mention-pop button.active {
+      background: var(--accent-soft);
+    }
+
+    .composer-wrap { position: relative; }
+
+    /* ---- Right panel ---- */
+    .panel {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+      overflow: hidden;
+      transition: opacity 0.18s ease;
+    }
+    .body.panel-collapsed .panel {
+      opacity: 0;
+      pointer-events: none;
+      border-left: none;
+    }
+    .panel-head {
+      height: 44px;
+      padding: 0 10px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 8px;
+    }
+    .panel-head h3 {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .panel-head .sub {
+      font-size: 11px;
+      color: var(--text-faint);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+    .panel-collapse {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      color: var(--text-dim);
+      font-size: 14px;
+      flex-shrink: 0;
+      border: 1px solid transparent;
+    }
+    .panel-collapse:hover {
+      background: var(--bg-elevated);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .panel-empty {
+      text-align: center;
+      padding: 40px 12px;
+      color: var(--text-faint);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .panel-expand-fab {
+      position: absolute;
+      top: 58px;
+      right: 10px;
+      z-index: 5;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-dim);
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+    .panel-expand-fab:hover { color: var(--text); }
+    .body.panel-collapsed .panel-expand-fab { display: inline-flex; }
+    .chat { position: relative; }
+
+    .member-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      margin-bottom: 6px;
+    }
+    .member-row .info { flex: 1; min-width: 0; }
+    .member-row .name { font-size: 13px; font-weight: 500; }
+    .member-row .meta { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+    .member-row .kick {
+      height: 26px;
+      padding: 0 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--danger);
+      border: 1px solid rgba(224, 108, 117, 0.35);
+      background: rgba(224, 108, 117, 0.08);
+    }
+    .member-row .kick:hover { background: rgba(224, 108, 117, 0.18); }
+    .member-row .kick:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .invite-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .invite-list button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px dashed var(--border-strong);
+      background: transparent;
+      font-size: 13px;
+      color: var(--text-dim);
+      text-align: left;
+    }
+    .invite-list button:hover {
+      border-style: solid;
+      border-color: rgba(232, 165, 75, 0.45);
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    .inline-edit {
+      display: flex;
+      gap: 6px;
+    }
+    .inline-edit input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      outline: none;
+      font-size: 13px;
+    }
+    .inline-edit input:focus { border-color: rgba(232, 165, 75, 0.5); }
+    .inline-edit button {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #1a1408;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .rule-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .rule-toggle button {
+      padding: 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      text-align: left;
+    }
+    .rule-toggle button strong { display: block; font-size: 12px; margin-bottom: 2px; }
+    .rule-toggle button span { font-size: 11px; color: var(--text-faint); }
+    .rule-toggle button.on {
+      border-color: rgba(232, 165, 75, 0.5);
+      background: var(--accent-soft);
+    }
+
+    .rooms-joined {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rooms-joined span {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-dim);
+    }
+
+    .agent-card-hero {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .agent-card-hero .big-av {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .agent-card-hero h3 { font-size: 16px; font-weight: 600; }
+    .agent-card-hero p { font-size: 12px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-faint);
+      margin-bottom: 6px;
+    }
+    .field .value {
+      font-size: 13px;
+      padding: 9px 11px;
+      background: var(--bg-elevated);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      line-height: 1.4;
+    }
+    .field .value.mono { font-family: var(--mono); font-size: 12px; }
+    .harness-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .harness-pill.codex { background: rgba(122, 162, 247, 0.15); color: var(--codex); }
+    .harness-pill.claude { background: rgba(212, 165, 116, 0.15); color: var(--claude); }
+    .harness-pill.cursor { background: rgba(163, 230, 53, 0.12); color: var(--cursor); }
+    .harness-pill.none { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+
+    .panel-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-block {
+      height: 36px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+    .btn-block:hover { border-color: var(--border-strong); }
+    .btn-block.accent {
+      background: var(--accent-soft);
+      border-color: rgba(232, 165, 75, 0.35);
+      color: var(--accent);
+    }
+
+    /* ---- Overlay / Modals ---- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 9, 10, 0.55);
+      backdrop-filter: blur(6px);
+      display: none;
+      place-items: center;
+      z-index: 100;
+      padding: 24px;
+    }
+    .overlay.open { display: grid; }
+
+    .modal {
+      width: min(560px, 100%);
+      background: var(--modal-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: modalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal.wide { width: min(680px, 100%); }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    .modal-head {
+      padding: 18px 20px 12px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .modal-head h2 {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .modal-head p { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+    .modal-close {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      color: var(--text-dim);
+      font-size: 18px;
+    }
+    .modal-close:hover { background: var(--bg-elevated); }
+    .modal-body { padding: 8px 20px 20px; }
+    .modal-foot {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .steps {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .steps .step {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+    }
+    .steps .step.on { background: var(--accent); }
+    .steps .step.done { background: rgba(232, 165, 75, 0.45); }
+
+    .form-row { margin-bottom: 14px; }
+    .form-row label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text-dim);
+    }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 13px;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      border-color: rgba(232, 165, 75, 0.5);
+    }
+    .form-row textarea { min-height: 88px; resize: vertical; line-height: 1.45; }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .choice {
+      text-align: left;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      transition: 0.12s;
+    }
+    .choice:hover { border-color: var(--border-strong); }
+    .choice.selected {
+      border-color: rgba(232, 165, 75, 0.55);
+      background: var(--accent-soft);
+    }
+    .choice strong { display: block; font-size: 13px; margin-bottom: 3px; }
+    .choice span { font-size: 11px; color: var(--text-faint); line-height: 1.35; display: block; }
+
+    .harness-grid { grid-template-columns: 1fr 1fr; }
+    .harness-grid .choice .tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .agent-pick {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .agent-pick label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .agent-pick label:has(input:checked) {
+      border-color: rgba(232, 165, 75, 0.5);
+      background: var(--accent-soft);
+    }
+    .agent-pick input { accent-color: var(--accent); }
+
+    .ghost-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    .ghost-btn:hover { color: var(--text); }
+    .primary-btn {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #1a1408;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .primary-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #32383f;
+      border: 1px solid var(--border-strong);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      z-index: 200;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ---- Prototype hint ---- */
+    .proto-hint {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      max-width: 260px;
+      padding: 12px 14px;
+      background: rgba(30, 33, 36, 0.92);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-dim);
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+    .proto-hint strong {
+      display: block;
+      color: var(--accent);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 980px) {
+      .body { grid-template-columns: 200px 1fr 0px; }
+      .body.panel-collapsed { grid-template-columns: 200px 1fr 0px; }
+      .panel { display: none; }
+      .panel-expand-fab { display: none !important; }
+      .proto-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menubar">
+    <div class="menubar-left">
+      <strong>Chorus</strong>
+      <span>文件</span>
+      <span>编辑</span>
+      <span>群聊</span>
+      <span>Agent</span>
+      <span>窗口</span>
+    </div>
+    <div class="menubar-right">
+      <span id="clock"></span>
+    </div>
+  </div>
+
+  <div class="desk">
+    <div class="window" role="application" aria-label="Chorus 主窗口">
+      <div class="titlebar">
+        <div class="traffic" aria-hidden="true">
+          <span class="r"></span><span class="y"></span><span class="g"></span>
+        </div>
+        <div class="title-center"><em>Chorus</em> — 多 Agent 协作桌面</div>
+        <div class="title-actions">
+          <button class="tb-btn" type="button" id="btnNewRoom">新建群</button>
+          <button class="tb-btn primary" type="button" id="btnNewAgent">新建 Agent</button>
+        </div>
+      </div>
+
+      <div class="body" id="appBody">
+        <aside class="sidebar">
+          <div class="side-brand">
+            <div class="logo-mark">C</div>
+            <div>
+              <h1>Chorus</h1>
+              <small>自定义模型 · Harness 内核</small>
+            </div>
+          </div>
+
+          <div class="side-section">
+            群聊
+            <button type="button" id="btnNewRoomSide" title="新建群">+</button>
+          </div>
+          <ul class="side-list" id="roomList"></ul>
+
+          <div class="side-section">
+            Agents
+            <button type="button" id="btnNewAgentSide" title="新建 Agent">+</button>
+          </div>
+          <ul class="side-list" id="agentList"></ul>
+
+          <div class="side-footer">
+            <button type="button" class="account-chip" id="btnAccount" title="登录状态">
+              <span class="av" id="accountAvatar">?</span>
+              <span class="meta">
+                <div class="name" id="accountName">未登录</div>
+                <div class="sub" id="accountSub">点击登录 / 注册</div>
+              </span>
+            </button>
+            <button type="button" class="settings-icon-btn" id="btnOpenSettings" title="设置 (⌘,)">⚙</button>
+          </div>
+        </aside>
+
+        <main class="chat">
+          <button type="button" class="panel-expand-fab" id="btnExpandPanel" title="展开右侧栏">‹ 详情</button>
+          <div class="chat-header">
+            <div>
+              <h2 id="roomTitle">架构评审房</h2>
+              <p id="roomSub">3 个 Agent · ~/projects/example-app · 自由发言</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="member-stack" id="memberStack"></div>
+              <button class="tool-btn" type="button" id="btnTogglePanel" title="折叠/展开右侧栏" style="border:1px solid var(--border);background:var(--bg-elevated);">右侧栏</button>
+            </div>
+          </div>
+
+          <div class="messages" id="messages"></div>
+          <div class="typing" id="typing" hidden>
+            <span class="typing-dots"><span></span><span></span><span></span></span>
+            <span id="typingText">Architect 正在输入…</span>
+          </div>
+
+          <div class="composer">
+            <div class="composer-wrap">
+              <div class="mention-pop" id="mentionPop"></div>
+              <div class="composer-box">
+                <textarea id="composerInput" rows="2" placeholder="给群里说话… 输入 @ 点名某个 Agent"></textarea>
+                <div class="composer-bar">
+                  <div class="composer-tools">
+                    <button class="tool-btn" type="button" id="btnMention">@ 点名</button>
+                    <button class="tool-btn" type="button" id="btnAttach">附加文件</button>
+                    <button class="tool-btn" type="button" title="原型占位">模式：讨论</button>
+                  </div>
+                  <button class="send-btn" type="button" id="btnSend">发送</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="panel" id="rightPanel" aria-label="详情侧栏">
+          <div class="panel-head">
+            <h3 id="panelTitle">群设置</h3>
+            <button type="button" class="panel-collapse" id="btnCollapsePanel" title="折叠右侧栏">›</button>
+          </div>
+          <div class="panel-body" id="panelBody"></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="proto-hint">
+    <strong>原型可点</strong>
+    左下角登录 · 小齿轮进设置 · 群设置改工作区路径
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- New / Edit Agent Modal -->
+  <div class="overlay" id="agentOverlay">
+    <div class="modal edit-wide" role="dialog" aria-labelledby="agentModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="agentModalTitle">新建 Agent</h2>
+          <p id="agentStepHint">第 1 步 · 人设与角色</p>
+        </div>
+        <button class="modal-close" type="button" data-close="agentOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="steps" id="agentSteps">
+          <div class="step on"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <div id="agentFormCreate">
+          <div id="agentStep1">
+            <div class="form-row">
+              <label for="agentName">名称</label>
+              <input id="agentName" placeholder="例如：Reviewer" maxlength="24" />
+            </div>
+            <div class="form-row">
+              <label for="agentRole">角色一句话</label>
+              <input id="agentRole" placeholder="例如：挑剔的代码审查官" maxlength="60" />
+            </div>
+            <div class="form-row">
+              <label for="agentPersona">人设 / 系统提示</label>
+              <textarea id="agentPersona" placeholder="描述这个 Agent 的立场、风格、边界…"></textarea>
+            </div>
+          </div>
+
+          <div id="agentStep2" hidden>
+            <div class="form-row">
+              <label>对话模型 Provider</label>
+              <div class="choice-grid" id="providerChoices">
+                <button type="button" class="choice selected" data-provider="openai">
+                  <strong>OpenAI 兼容</strong>
+                  <span>GPT / 自建网关 / Azure</span>
+                </button>
+                <button type="button" class="choice" data-provider="anthropic">
+                  <strong>Anthropic</strong>
+                  <span>Claude 系列直连</span>
+                </button>
+                <button type="button" class="choice" data-provider="local">
+                  <strong>本地模型</strong>
+                  <span>Ollama / LM Studio</span>
+                </button>
+                <button type="button" class="choice" data-provider="custom">
+                  <strong>自定义 Endpoint</strong>
+                  <span>任意 OpenAI-compatible</span>
+                </button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="modelId">模型 ID</label>
+              <input id="modelId" placeholder="例如：gpt-5 / claude-sonnet / qwen2.5-coder" value="gpt-5" />
+            </div>
+            <div class="form-row" id="customEndpointRow" hidden>
+              <label for="modelEndpoint">自定义 Endpoint</label>
+              <input id="modelEndpoint" placeholder="https://api.example.com/v1" />
+            </div>
+          </div>
+
+          <div id="agentStep3" hidden>
+            <div class="form-row">
+              <label>执行内核（Harness）</label>
+              <div class="choice-grid harness-grid" id="harnessChoices">
+                <button type="button" class="choice selected" data-harness="none">
+                  <strong>仅对话</strong>
+                  <span>不接编程工具，只参与讨论</span>
+                  <span class="tag">chat</span>
+                </button>
+                <button type="button" class="choice" data-harness="codex">
+                  <strong>Codex</strong>
+                  <span>OpenAI Codex CLI / 会话</span>
+                  <span class="tag">codex</span>
+                </button>
+                <button type="button" class="choice" data-harness="claude">
+                  <strong>Claude Code</strong>
+                  <span>Anthropic 编程 Agent</span>
+                  <span class="tag">claude-code</span>
+                </button>
+                <button type="button" class="choice" data-harness="cursor">
+                  <strong>Cursor</strong>
+                  <span>Cursor Agent / Harness</span>
+                  <span class="tag">cursor</span>
+                </button>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-faint);line-height:1.45;margin-top:4px;">
+              选了 Harness 后，该 Agent 在群里被派活时可调用对应工具改代码；对话模型仍可独立配置。
+            </p>
+          </div>
+        </div>
+
+        <!-- 编辑模式：单页完整表单 -->
+        <div id="agentFormEdit" hidden>
+          <div class="edit-section-title">人设与角色</div>
+          <div class="form-row">
+            <label for="editAgentName">名称</label>
+            <input id="editAgentName" maxlength="24" />
+          </div>
+          <div class="form-row">
+            <label for="editAgentRole">角色一句话</label>
+            <input id="editAgentRole" maxlength="60" />
+          </div>
+          <div class="form-row">
+            <label for="editAgentPersona">人设 / 系统提示</label>
+            <textarea id="editAgentPersona"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="editAgentLabel">可选标签</label>
+            <input id="editAgentLabel" placeholder="例如：主力实现 / 只读审查" maxlength="40" />
+          </div>
+
+          <div class="edit-section-title">自定义模型</div>
+          <div class="form-row">
+            <label>对话模型 Provider</label>
+            <div class="choice-grid" id="editProviderChoices">
+              <button type="button" class="choice" data-provider="openai"><strong>OpenAI 兼容</strong><span>GPT / 网关 / Azure</span></button>
+              <button type="button" class="choice" data-provider="anthropic"><strong>Anthropic</strong><span>Claude 直连</span></button>
+              <button type="button" class="choice" data-provider="local"><strong>本地模型</strong><span>Ollama / LM Studio</span></button>
+              <button type="button" class="choice" data-provider="custom"><strong>自定义 Endpoint</strong><span>OpenAI-compatible</span></button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="editModelId">模型 ID</label>
+            <input id="editModelId" />
+          </div>
+          <div class="form-row" id="editEndpointRow" hidden>
+            <label for="editModelEndpoint">自定义 Endpoint</label>
+            <input id="editModelEndpoint" placeholder="https://api.example.com/v1" />
+          </div>
+          <div class="form-row">
+            <label for="editTemperature">Temperature</label>
+            <input id="editTemperature" type="number" min="0" max="2" step="0.1" value="0.7" />
+          </div>
+
+          <div class="edit-section-title">执行内核</div>
+          <div class="form-row">
+            <label>Harness</label>
+            <div class="choice-grid harness-grid" id="editHarnessChoices">
+              <button type="button" class="choice" data-harness="none"><strong>仅对话</strong><span>不接编程工具</span><span class="tag">chat</span></button>
+              <button type="button" class="choice" data-harness="codex"><strong>Codex</strong><span>CLI / 会话</span><span class="tag">codex</span></button>
+              <button type="button" class="choice" data-harness="claude"><strong>Claude Code</strong><span>编程 Agent</span><span class="tag">claude-code</span></button>
+              <button type="button" class="choice" data-harness="cursor"><strong>Cursor</strong><span>Agent Harness</span><span class="tag">cursor</span></button>
+            </div>
+          </div>
+
+          <div class="edit-section-title">通知（参考 Grok Bot 单 Bot 设置）</div>
+          <div class="settings-row" style="margin:0;">
+            <div class="label">
+              <strong>完成时通知</strong>
+              <span>Agent 任务结束或需要确认时弹出系统通知</span>
+            </div>
+            <button type="button" class="toggle" id="editNotifyToggle" aria-pressed="false"></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="danger-btn" type="button" id="agentDelete" hidden>删除 Agent</button>
+        <div style="flex:1"></div>
+        <button class="ghost-btn" type="button" id="agentBack" hidden>上一步</button>
+        <button class="ghost-btn" type="button" data-close="agentOverlay">取消</button>
+        <button class="primary-btn" type="button" id="agentNext">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Overlay -->
+  <div class="overlay" id="authOverlay">
+    <div class="modal" role="dialog" aria-labelledby="authTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="authTitle">登录 Chorus</h2>
+          <p id="authDesc">用 Google 登录，或注册本机账号</p>
+        </div>
+        <button class="modal-close" type="button" data-close="authOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="authLoggedOut">
+          <div class="auth-choices">
+            <button type="button" class="auth-btn google" id="btnGoogleLogin">
+              <span style="font-weight:700;color:#4285F4">G</span>
+              使用 Google 登录
+            </button>
+          </div>
+          <div class="auth-divider">或注册邮箱账号</div>
+          <div class="form-row">
+            <label for="regEmail">邮箱</label>
+            <input id="regEmail" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="form-row">
+            <label for="regName">显示名称</label>
+            <input id="regName" placeholder="例如：Jia" maxlength="24" />
+          </div>
+          <div class="form-row">
+            <label for="regPassword">密码</label>
+            <input id="regPassword" type="password" placeholder="至少 8 位" />
+          </div>
+          <button type="button" class="auth-btn primary-fill" id="btnRegister" style="width:100%;margin-top:4px;">注册并登录</button>
+        </div>
+        <div id="authLoggedIn" hidden>
+          <div class="settings-row" style="margin-bottom:14px;">
+            <div class="label">
+              <strong id="authProfileName">—</strong>
+              <span id="authProfileEmail">—</span>
+            </div>
+            <span class="harness-pill none" id="authProviderPill">Google</span>
+          </div>
+          <button type="button" class="danger-btn" id="btnLogout" style="width:100%;">退出登录</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Overlay -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="settings-shell" role="dialog" aria-labelledby="settingsTitle">
+      <nav class="settings-nav" id="settingsNav">
+        <div class="nav-title">设置</div>
+        <button type="button" class="active" data-settings="general">通用</button>
+        <button type="button" data-settings="appearance">外观</button>
+        <button type="button" data-settings="agent">Agent 默认</button>
+        <button type="button" data-settings="harness">本机与内核</button>
+        <button type="button" data-settings="models">模型与密钥</button>
+        <button type="button" data-settings="approvals">审批与安全</button>
+        <button type="button" data-settings="notifications">通知</button>
+        <button type="button" data-settings="updates">更新与关于</button>
+      </nav>
+      <div class="settings-main">
+        <div class="settings-main-head">
+          <div>
+            <h2 id="settingsTitle">通用</h2>
+            <p id="settingsDesc">应用级偏好，参考 Grok Bot Settings</p>
+          </div>
+          <button class="modal-close" type="button" data-close="settingsOverlay">×</button>
+        </div>
+        <div class="settings-content" id="settingsContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Room Modal -->
+  <div class="overlay" id="roomOverlay">
+    <div class="modal" role="dialog" aria-labelledby="roomModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="roomModalTitle">新建群聊</h2>
+          <p>把多个 Agent 拉进同一房间讨论</p>
+        </div>
+        <button class="modal-close" type="button" data-close="roomOverlay">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label for="roomName">群名称</label>
+          <input id="roomName" placeholder="例如：需求澄清房" />
+        </div>
+        <div class="form-row">
+          <label>拉入 Agent</label>
+          <div class="agent-pick" id="roomAgentPick"></div>
+        </div>
+        <div class="form-row">
+          <label>发言规则</label>
+          <div class="choice-grid">
+            <button type="button" class="choice selected" data-rule="free" id="ruleFree">
+              <strong>自由接力</strong>
+              <span>相关 Agent 可自动接话</span>
+            </button>
+            <button type="button" class="choice" data-rule="mention" id="ruleMention">
+              <strong>仅 @ 发言</strong>
+              <span>只有被点名的才回复</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost-btn" type="button" data-close="roomOverlay">取消</button>
+        <button class="primary-btn" type="button" id="roomCreate">创建群聊</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Reading this as: Mac desktop multi-agent chat app prototype for builders,
+    // with native macOS window chrome + warm amber accent (not purple SaaS).
+
+    const AVATAR_COLORS = {
+      Architect: { bg: "#3d4f66", fg: "#b8d0f0" },
+      Coder: { bg: "#2f4f44", fg: "#9ee0c8" },
+      Reviewer: { bg: "#5a4332", fg: "#f0c9a0" },
+      PM: { bg: "#4a3d5c", fg: "#d4c0f0" },
+      default: { bg: "#3a4048", fg: "#d0d5db" },
+    };
+
+    const HARNESS_LABEL = {
+      none: "仅对话",
+      codex: "Codex",
+      claude: "Claude Code",
+      cursor: "Cursor",
+    };
+
+    const state = {
+      agents: [
+        {
+          id: "a1",
+          name: "Architect",
+          role: "系统架构师",
+          persona: "从边界、扩展性和失败模式出发，先画清楚再动手。",
+          provider: "anthropic",
+          model: "claude-sonnet",
+          harness: "none",
+          initial: "A",
+          label: "",
+          endpoint: "",
+          temperature: 0.7,
+          notify: false,
+        },
+        {
+          id: "a2",
+          name: "Coder",
+          role: "实现工程师",
+          persona: "把方案落成可运行的最小改动，偏好清晰模块边界。",
+          provider: "openai",
+          model: "gpt-5",
+          harness: "codex",
+          initial: "C",
+          label: "主力实现",
+          endpoint: "",
+          temperature: 0.4,
+          notify: true,
+        },
+        {
+          id: "a3",
+          name: "Reviewer",
+          role: "代码审查官",
+          persona: "专找回归风险、权限漏洞和不可测代码。",
+          provider: "anthropic",
+          model: "claude-sonnet",
+          harness: "claude",
+          initial: "R",
+          label: "只读审查",
+          endpoint: "",
+          temperature: 0.3,
+          notify: true,
+        },
+        {
+          id: "a4",
+          name: "PM",
+          role: "产品经理",
+          persona: "盯住用户价值和验收标准，阻止过度设计。",
+          provider: "local",
+          model: "qwen2.5",
+          harness: "none",
+          initial: "P",
+          label: "",
+          endpoint: "",
+          temperature: 0.7,
+          notify: false,
+        },
+      ],
+      rooms: [
+        {
+          id: "r1",
+          name: "架构评审房",
+          agentIds: ["a1", "a2", "a3"],
+          rule: "free",
+          workspace: "~/projects/example-app",
+          messages: [
+            { id: "m0", type: "day", text: "今天" },
+            {
+              id: "m1",
+              from: "you",
+              text: "我们要做一个像 Grok 多 Bot 同群讨论的桌面端，但每个 Agent 能自定义模型，还能挂 Codex / Claude Code / Cursor。先从交互形态聊起。",
+              time: "23:40",
+            },
+            {
+              id: "m2",
+              from: "a1",
+              text: "核心对象建议定成四级：Workspace → Room → Agent → Harness。群聊只负责编排对话；真正写代码走 Harness 会话，避免把 IDE 状态塞进聊天气泡里。",
+              time: "23:41",
+            },
+            {
+              id: "m3",
+              from: "a3",
+              text: "同意分层。另外发言权必须可配：自由接力适合头脑风暴；@ 点名适合编码任务，否则三个 Kernel 同时改仓库会撞车。",
+              time: "23:41",
+            },
+            {
+              id: "m4",
+              from: "a2",
+              text: "实现上我建议 MVP 先做「中档」Harness：本机唤起 CLI 会话、投递任务、收回 diff 摘要，贴回群里。Cursor 深度嵌入可以二期。",
+              time: "23:42",
+              chips: ["Codex 会话就绪"],
+            },
+          ],
+        },
+        {
+          id: "r2",
+          name: "需求澄清房",
+          agentIds: ["a1", "a4"],
+          rule: "mention",
+          workspace: "~/projects/chorus-demo",
+          messages: [
+            { id: "m0", type: "day", text: "今天" },
+            {
+              id: "m1",
+              from: "you",
+              text: "这个产品第一版到底先打穿编程协作，还是通用辩论房？",
+              time: "22:10",
+            },
+            {
+              id: "m2",
+              from: "a4",
+              text: "建议 MVP 打穿「编程协作房」：差异化最清晰（自定义模型 + Harness），也最好演示。通用辩论可以复用同一套 Room/Agent，只是不绑内核。",
+              time: "22:11",
+            },
+          ],
+        },
+      ],
+      activeRoomId: "r1",
+      selectedAgentId: null,
+      panelMode: "room", // "room" | "agent" — 由点击上下文决定，不再混用 Tab
+      panelCollapsed: false,
+      agentModalMode: "create", // create | edit
+      editingAgentId: null,
+      agentWizardStep: 1,
+      agentDraft: {
+        provider: "openai",
+        harness: "none",
+      },
+      editDraft: {
+        provider: "openai",
+        harness: "none",
+        notify: false,
+      },
+      settingsSection: "general",
+      user: null, // { name, email, provider: 'google'|'email' }
+      settings: {
+        theme: localStorage.getItem("chorus-theme") || "system",
+        language: "zh-CN",
+        timezone: "Asia/Shanghai",
+        localExecution: true,
+        autoApproveSafe: false,
+        routeLocal: false,
+        notifyApp: true,
+        notifySound: false,
+        defaultProvider: "openai",
+        harnessCodex: "connected",
+        harnessClaude: "connected",
+        harnessCursor: "pending",
+      },
+      roomRule: "free",
+      sending: false,
+    };
+
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+    function avatarStyle(name) {
+      return AVATAR_COLORS[name] || AVATAR_COLORS.default;
+    }
+
+    function getAgent(id) {
+      return state.agents.find((a) => a.id === id);
+    }
+
+    function getRoom(id) {
+      return state.rooms.find((r) => r.id === id);
+    }
+
+    function activeRoom() {
+      return getRoom(state.activeRoomId);
+    }
+
+    function nowTime() {
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function toast(text) {
+      const el = $("#toast");
+      el.textContent = text;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function updateClock() {
+      const d = new Date();
+      $("#clock").textContent = d.toLocaleString("zh-CN", {
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function renderRooms() {
+      const list = $("#roomList");
+      list.innerHTML = state.rooms
+        .map((r) => {
+          const n = r.agentIds.length;
+          const active = r.id === state.activeRoomId ? "active" : "";
+          return `<li>
+            <button type="button" class="room-item ${active}" data-room="${r.id}">
+              <span class="dot"></span>
+              <span class="meta">
+                <div class="name">${escapeHtml(r.name)}</div>
+                <div class="sub">${n} Agents · ${r.rule === "free" ? "自由接力" : "仅 @"}</div>
+              </span>
+            </button>
+          </li>`;
+        })
+        .join("");
+    }
+
+    function renderAgents() {
+      const list = $("#agentList");
+      list.innerHTML = state.agents
+        .map((a) => {
+          const c = avatarStyle(a.name);
+          const selected = a.id === state.selectedAgentId ? "selected" : "";
+          return `<li>
+            <button type="button" class="agent-item ${selected}" data-agent="${a.id}">
+              <span class="avatar" style="background:${c.bg};color:${c.fg}">${a.initial}</span>
+              <span>
+                <div class="name">${escapeHtml(a.name)}</div>
+                <div class="harness">${HARNESS_LABEL[a.harness]}</div>
+              </span>
+            </button>
+          </li>`;
+        })
+        .join("");
+    }
+
+    function renderMemberStack() {
+      const room = activeRoom();
+      const stack = $("#memberStack");
+      const agents = room.agentIds.map(getAgent).filter(Boolean);
+      stack.innerHTML =
+        agents
+          .slice(0, 4)
+          .map((a) => {
+            const c = avatarStyle(a.name);
+            return `<span class="av" style="background:${c.bg};color:${c.fg}" title="${escapeHtml(a.name)}">${a.initial}</span>`;
+          })
+          .join("") +
+        `<span class="more">你 + ${agents.length} Agents</span>`;
+      $("#roomTitle").textContent = room.name;
+      const ws = room.workspace || "未绑定工作区";
+      $("#roomSub").textContent = `${agents.length} 个 Agent · ${ws} · ${
+        room.rule === "free" ? "自由发言" : "仅 @ 发言"
+      }`;
+    }
+
+    function renderMessages() {
+      const room = activeRoom();
+      const box = $("#messages");
+      box.innerHTML = room.messages
+        .map((m) => {
+          if (m.type === "day") {
+            return `<div class="day-sep">${escapeHtml(m.text)}</div>`;
+          }
+          if (m.from === "you") {
+            return `<div class="msg you">
+              <div class="msg-bubble">
+                <div class="msg-head">
+                  <span class="who">你</span>
+                  <span class="when">${m.time}</span>
+                </div>
+                <div class="msg-body">${formatBody(m.text)}</div>
+              </div>
+            </div>`;
+          }
+          const agent = getAgent(m.from);
+          if (!agent) return "";
+          const c = avatarStyle(agent.name);
+          const chips = (m.chips || [])
+            .map((t) => `<span class="chip live">${escapeHtml(t)}</span>`)
+            .join("");
+          const badge =
+            agent.harness !== "none"
+              ? `<span class="badge">${HARNESS_LABEL[agent.harness]}</span>`
+              : "";
+          return `<div class="msg">
+            <div class="av" style="background:${c.bg};color:${c.fg}">${agent.initial}</div>
+            <div class="msg-bubble">
+              <div class="msg-head">
+                <span class="who" style="color:${c.fg}">${escapeHtml(agent.name)}</span>
+                ${badge}
+                <span class="when">${m.time}</span>
+              </div>
+              <div class="msg-body">${formatBody(m.text)}</div>
+              ${chips ? `<div class="msg-actions">${chips}</div>` : ""}
+            </div>
+          </div>`;
+        })
+        .join("");
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function setPanelCollapsed(collapsed) {
+      state.panelCollapsed = collapsed;
+      $("#appBody").classList.toggle("panel-collapsed", collapsed);
+    }
+
+    function openPanel(mode, { agentId = null, expand = true } = {}) {
+      state.panelMode = mode;
+      if (mode === "agent") state.selectedAgentId = agentId;
+      if (expand) setPanelCollapsed(false);
+      renderAgents();
+      renderPanel();
+    }
+
+    function roomsContainingAgent(agentId) {
+      return state.rooms.filter((r) => r.agentIds.includes(agentId));
+    }
+
+    function renderPanel() {
+      const body = $("#panelBody");
+      const title = $("#panelTitle");
+
+      if (state.panelMode === "agent") {
+        const a = getAgent(state.selectedAgentId);
+        if (!a) {
+          title.textContent = "Agent";
+          body.innerHTML = `<div class="panel-empty">选择一个 Agent<br/>查看人设与内核</div>`;
+          return;
+        }
+        const c = avatarStyle(a.name);
+        const joined = roomsContainingAgent(a.id);
+        title.textContent = `Agent · ${a.name}`;
+        body.innerHTML = `
+          <div class="agent-card-hero">
+            <div class="big-av" style="background:${c.bg};color:${c.fg}">${a.initial}</div>
+            <h3>${escapeHtml(a.name)}</h3>
+            <p>${escapeHtml(a.role)}</p>
+          </div>
+          <div class="field">
+            <label>人设</label>
+            <div class="value">${escapeHtml(a.persona)}</div>
+          </div>
+          <div class="field">
+            <label>对话模型</label>
+            <div class="value mono">${escapeHtml(a.provider)} / ${escapeHtml(a.model)}</div>
+          </div>
+          <div class="field">
+            <label>执行内核</label>
+            <div class="value">
+              <span class="harness-pill ${a.harness}">${HARNESS_LABEL[a.harness]}</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>已加入的群</label>
+            <div class="value">
+              ${
+                joined.length
+                  ? `<div class="rooms-joined">${joined
+                      .map((r) => `<span>${escapeHtml(r.name)}</span>`)
+                      .join("")}</div>`
+                  : `<span style="color:var(--text-faint);font-size:12px">尚未加入任何群（可在群设置里拉人）</span>`
+              }
+            </div>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-block" type="button" id="btnEditAgent">编辑 Agent</button>
+          </div>`;
+        $("#btnEditAgent")?.addEventListener("click", () => openEditAgentModal(a.id));
+        return;
+      }
+
+      // ---- 群设置（点群聊时）----
+      const room = activeRoom();
+      title.textContent = `群设置 · ${room.name}`;
+      const members = room.agentIds.map(getAgent).filter(Boolean);
+      const outsiders = state.agents.filter((a) => !room.agentIds.includes(a.id));
+
+      body.innerHTML = `
+        <div class="field">
+          <label>群名称</label>
+          <div class="inline-edit">
+            <input id="roomNameEdit" value="${escapeHtml(room.name)}" maxlength="40" />
+            <button type="button" id="btnSaveRoomName">保存</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>发言规则</label>
+          <div class="rule-toggle">
+            <button type="button" class="${room.rule === "free" ? "on" : ""}" data-set-rule="free">
+              <strong>自由接力</strong>
+              <span>相关 Agent 可自动接话</span>
+            </button>
+            <button type="button" class="${room.rule === "mention" ? "on" : ""}" data-set-rule="mention">
+              <strong>仅 @ 发言</strong>
+              <span>只有被点名的才回复</span>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>工作区路径</label>
+          <div class="inline-edit">
+            <input id="roomWorkspaceEdit" value="${escapeHtml(room.workspace || "")}" placeholder="~/path/to/project" />
+            <button type="button" id="btnSaveWorkspace">保存</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>群成员（${members.length}）</label>
+          <div id="roomMembers">
+            ${
+              members.length
+                ? members
+                    .map((a) => {
+                      const c = avatarStyle(a.name);
+                      const canKick = members.length > 1;
+                      return `<div class="member-row">
+                        <span class="avatar" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:${c.bg};color:${c.fg}">${a.initial}</span>
+                        <div class="info">
+                          <div class="name">${escapeHtml(a.name)}</div>
+                          <div class="meta">${HARNESS_LABEL[a.harness]}</div>
+                        </div>
+                        <button type="button" class="kick" data-kick="${a.id}" ${canKick ? "" : "disabled"} title="${canKick ? "移出本群" : "至少保留一人"}">踢出</button>
+                      </div>`;
+                    })
+                    .join("")
+                : `<div class="panel-empty" style="padding:16px 0">暂无成员</div>`
+            }
+          </div>
+        </div>
+        <div class="field">
+          <label>拉人进群</label>
+          <div class="invite-list" id="inviteList">
+            ${
+              outsiders.length
+                ? outsiders
+                    .map((a) => {
+                      const c = avatarStyle(a.name);
+                      return `<button type="button" data-invite="${a.id}">
+                        <span class="avatar" style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;background:${c.bg};color:${c.fg}">${a.initial}</span>
+                        <span>${escapeHtml(a.name)}</span>
+                        <span style="margin-left:auto;font-size:11px;color:var(--text-faint)">+ 加入</span>
+                      </button>`;
+                    })
+                    .join("")
+                : `<div style="font-size:12px;color:var(--text-faint);padding:4px 0">所有 Agent 都已在群里</div>`
+            }
+          </div>
+        </div>`;
+
+      $("#btnSaveRoomName")?.addEventListener("click", () => {
+        const next = $("#roomNameEdit").value.trim();
+        if (!next) {
+          toast("群名称不能为空");
+          return;
+        }
+        room.name = next;
+        renderAll();
+        toast("群名称已更新");
+      });
+
+      $("#btnSaveWorkspace")?.addEventListener("click", () => {
+        const next = $("#roomWorkspaceEdit").value.trim();
+        room.workspace = next || "";
+        renderAll();
+        toast(next ? "工作区路径已更新" : "已清除工作区绑定");
+      });
+
+      $$("[data-set-rule]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          room.rule = btn.dataset.setRule;
+          renderAll();
+          toast(`发言规则 → ${room.rule === "free" ? "自由接力" : "仅 @"}`);
+        });
+      });
+
+      $$("[data-kick]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.kick;
+          if (room.agentIds.length <= 1) {
+            toast("群里至少保留一个 Agent");
+            return;
+          }
+          const agent = getAgent(id);
+          room.agentIds = room.agentIds.filter((x) => x !== id);
+          renderAll();
+          toast(`已将 ${agent?.name || "成员"} 移出本群`);
+        });
+      });
+
+      $$("[data-invite]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.invite;
+          if (!room.agentIds.includes(id)) {
+            room.agentIds.push(id);
+            const agent = getAgent(id);
+            renderAll();
+            toast(`已将 ${agent?.name} 拉入「${room.name}」`);
+          }
+        });
+      });
+    }
+
+    function renderAll() {
+      renderRooms();
+      renderAgents();
+      renderMemberStack();
+      renderMessages();
+      renderPanel();
+      $("#appBody").classList.toggle("panel-collapsed", state.panelCollapsed);
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function formatBody(text) {
+      return escapeHtml(text).replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+    }
+
+    function openOverlay(id) {
+      $(`#${id}`).classList.add("open");
+    }
+    function closeOverlay(id) {
+      $(`#${id}`).classList.remove("open");
+    }
+
+    function selectChoice(containerSel, attr, value) {
+      $$(`${containerSel} .choice`).forEach((el) => {
+        el.classList.toggle("selected", el.dataset[attr] === value);
+      });
+    }
+
+    function applyTheme(theme) {
+      state.settings.theme = theme;
+      localStorage.setItem("chorus-theme", theme);
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+
+    function resetAgentWizard() {
+      state.agentModalMode = "create";
+      state.editingAgentId = null;
+      state.agentWizardStep = 1;
+      state.agentDraft = { provider: "openai", harness: "none" };
+      $("#agentName").value = "";
+      $("#agentRole").value = "";
+      $("#agentPersona").value = "";
+      $("#modelId").value = "gpt-5";
+      $("#modelEndpoint").value = "";
+      selectChoice("#providerChoices", "provider", "openai");
+      selectChoice("#harnessChoices", "harness", "none");
+      $("#customEndpointRow").hidden = true;
+      syncAgentWizardUI();
+    }
+
+    function syncAgentWizardUI() {
+      const isEdit = state.agentModalMode === "edit";
+      $("#agentFormCreate").hidden = isEdit;
+      $("#agentFormEdit").hidden = !isEdit;
+      $("#agentSteps").hidden = isEdit;
+      $("#agentDelete").hidden = !isEdit;
+      $("#agentBack").hidden = isEdit || state.agentWizardStep === 1;
+
+      if (isEdit) {
+        $("#agentModalTitle").textContent = "编辑 Agent";
+        $("#agentStepHint").textContent = "修改人设、模型与 Harness 内核";
+        $("#agentNext").textContent = "保存修改";
+        return;
+      }
+
+      const step = state.agentWizardStep;
+      $("#agentStep1").hidden = step !== 1;
+      $("#agentStep2").hidden = step !== 2;
+      $("#agentStep3").hidden = step !== 3;
+      $("#agentNext").textContent = step === 3 ? "创建 Agent" : "下一步";
+      const hints = ["第 1 步 · 人设与角色", "第 2 步 · 自定义模型", "第 3 步 · 绑定 Harness 内核"];
+      $("#agentModalTitle").textContent = "新建 Agent";
+      $("#agentStepHint").textContent = hints[step - 1];
+      $$("#agentSteps .step").forEach((el, i) => {
+        el.classList.toggle("on", i === step - 1);
+        el.classList.toggle("done", i < step - 1);
+      });
+      $("#customEndpointRow").hidden = state.agentDraft.provider !== "custom";
+    }
+
+    function openAgentModal() {
+      resetAgentWizard();
+      openOverlay("agentOverlay");
+      setTimeout(() => $("#agentName").focus(), 50);
+    }
+
+    function openEditAgentModal(agentId) {
+      const a = getAgent(agentId);
+      if (!a) return;
+      state.agentModalMode = "edit";
+      state.editingAgentId = agentId;
+      state.editDraft = {
+        provider: a.provider,
+        harness: a.harness,
+        notify: !!a.notify,
+      };
+      $("#editAgentName").value = a.name;
+      $("#editAgentRole").value = a.role;
+      $("#editAgentPersona").value = a.persona;
+      $("#editAgentLabel").value = a.label || "";
+      $("#editModelId").value = a.model;
+      $("#editModelEndpoint").value = a.endpoint || "";
+      $("#editTemperature").value = a.temperature ?? 0.7;
+      selectChoice("#editProviderChoices", "provider", a.provider);
+      selectChoice("#editHarnessChoices", "harness", a.harness);
+      $("#editEndpointRow").hidden = a.provider !== "custom";
+      $("#editNotifyToggle").classList.toggle("on", !!a.notify);
+      $("#editNotifyToggle").setAttribute("aria-pressed", String(!!a.notify));
+      syncAgentWizardUI();
+      openOverlay("agentOverlay");
+      setTimeout(() => $("#editAgentName").focus(), 50);
+    }
+
+    function saveEditedAgent() {
+      const a = getAgent(state.editingAgentId);
+      if (!a) return;
+      const name = $("#editAgentName").value.trim();
+      if (!name) {
+        toast("名称不能为空");
+        return;
+      }
+      a.name = name;
+      a.role = $("#editAgentRole").value.trim() || "自定义角色";
+      a.persona = $("#editAgentPersona").value.trim() || "尚未填写人设。";
+      a.label = $("#editAgentLabel").value.trim();
+      a.provider = state.editDraft.provider;
+      a.model = $("#editModelId").value.trim() || a.model;
+      a.endpoint = $("#editModelEndpoint").value.trim();
+      a.temperature = Number($("#editTemperature").value) || 0.7;
+      a.harness = state.editDraft.harness;
+      a.notify = state.editDraft.notify;
+      a.initial = name.slice(0, 1).toUpperCase();
+      closeOverlay("agentOverlay");
+      openPanel("agent", { agentId: a.id, expand: true });
+      renderRooms();
+      renderMemberStack();
+      renderMessages();
+      toast(`已保存「${a.name}」`);
+    }
+
+    function deleteEditedAgent() {
+      const id = state.editingAgentId;
+      const a = getAgent(id);
+      if (!a) return;
+      if (state.agents.length <= 1) {
+        toast("至少保留一个 Agent");
+        return;
+      }
+      state.agents = state.agents.filter((x) => x.id !== id);
+      state.rooms.forEach((r) => {
+        r.agentIds = r.agentIds.filter((x) => x !== id);
+        if (r.agentIds.length === 0 && state.agents[0]) r.agentIds = [state.agents[0].id];
+      });
+      closeOverlay("agentOverlay");
+      state.selectedAgentId = null;
+      openPanel("room", { expand: true });
+      renderAll();
+      toast(`已删除「${a.name}」`);
+    }
+
+    function createAgentFromWizard() {
+      const name = $("#agentName").value.trim() || "NewAgent";
+      const role = $("#agentRole").value.trim() || "自定义角色";
+      const persona = $("#agentPersona").value.trim() || "尚未填写人设。";
+      const model = $("#modelId").value.trim() || "gpt-5";
+      const id = "a" + Date.now();
+      const agent = {
+        id,
+        name,
+        role,
+        persona,
+        provider: state.agentDraft.provider,
+        model,
+        harness: state.agentDraft.harness,
+        initial: name.slice(0, 1).toUpperCase(),
+        label: "",
+        endpoint: $("#modelEndpoint").value.trim(),
+        temperature: 0.7,
+        notify: false,
+      };
+      state.agents.push(agent);
+      closeOverlay("agentOverlay");
+      openPanel("agent", { agentId: id, expand: true });
+      renderRooms();
+      toast(`已创建 Agent「${name}」`);
+    }
+
+    const SETTINGS_META = {
+      general: { title: "通用", desc: "账号、语言与本机执行偏好（对标 Grok Bot · General）" },
+      appearance: { title: "外观", desc: "背景模式与界面主题（对标 Grok Bot · Appearance）" },
+      agent: { title: "Agent 默认", desc: "新建 Agent 时的默认行为与时区" },
+      harness: { title: "本机与内核", desc: "Codex / Claude Code / Cursor 连接与本地执行" },
+      models: { title: "模型与密钥", desc: "自定义模型 Provider 与 API Key（安全存在本机）" },
+      approvals: { title: "审批与安全", desc: "对标 Grok Bot · Auto-review / 本机命令审批" },
+      notifications: { title: "通知", desc: "应用焦点时抑制、完成任务时提醒" },
+      updates: { title: "更新与关于", desc: "版本、检查更新与产品信息" },
+    };
+
+    function renderSettings() {
+      const key = state.settingsSection;
+      const meta = SETTINGS_META[key];
+      $("#settingsTitle").textContent = meta.title;
+      $("#settingsDesc").textContent = meta.desc;
+      $$("#settingsNav button").forEach((b) => b.classList.toggle("active", b.dataset.settings === key));
+      const s = state.settings;
+      const box = $("#settingsContent");
+
+      if (key === "general") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>账号</h4>
+            <div class="settings-row">
+              <div class="label">
+                <strong>${state.user ? escapeHtml(state.user.name) : "未登录"}</strong>
+                <span>${state.user ? escapeHtml(state.user.email) + " · " + (state.user.provider === "google" ? "Google" : "邮箱") : "可使用 Google 登录或注册"}</span>
+              </div>
+              <button class="ghost-btn" type="button" id="setAccountBtn">${state.user ? "管理账号" : "登录 / 注册"}</button>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>语言</h4>
+            <div class="settings-row">
+              <div class="label"><strong>界面语言</strong><span>Follow System 或指定语言</span></div>
+              <div class="segmented" id="langSeg">
+                <button type="button" data-lang="system" class="${s.language === "system" ? "on" : ""}">随系统</button>
+                <button type="button" data-lang="zh-CN" class="${s.language === "zh-CN" ? "on" : ""}">简体中文</button>
+                <button type="button" data-lang="en" class="${s.language === "en" ? "on" : ""}">English</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>Bot / Agent</h4>
+            <div class="settings-row">
+              <div class="label"><strong>时区</strong><span>日程与例行任务使用的时区</span></div>
+              <code style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${escapeHtml(s.timezone)}</code>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>在本机执行</strong><span>允许 Agent 通过 Harness 在当前电脑跑命令（对标 Execution on Local Computer）</span></div>
+              <button type="button" class="toggle ${s.localExecution ? "on" : ""}" data-toggle="localExecution"></button>
+            </div>
+          </div>`;
+        $("#setAccountBtn")?.addEventListener("click", () => {
+          closeOverlay("settingsOverlay");
+          openAuthModal();
+        });
+        bindLangSeg();
+        bindSettingToggles();
+        return;
+      }
+
+      if (key === "appearance") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>背景模式</h4>
+            <div class="settings-row">
+              <div class="label"><strong>主题</strong><span>Follow System / Light / Dark（对标 Grok Bot Appearance）</span></div>
+              <div class="segmented" id="themeSeg">
+                <button type="button" data-theme-opt="system" class="${s.theme === "system" ? "on" : ""}">随系统</button>
+                <button type="button" data-theme-opt="dark" class="${s.theme === "dark" ? "on" : ""}">Dark</button>
+                <button type="button" data-theme-opt="light" class="${s.theme === "light" ? "on" : ""}">Light</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>预览</h4>
+            <div class="settings-row">
+              <div class="label"><strong>当前生效</strong><span id="themeEffective">—</span></div>
+              <span style="font-size:12px;color:var(--text-faint)">切换后立即应用到整个窗口</span>
+            </div>
+          </div>`;
+        updateThemeEffectiveLabel();
+        $$("#themeSeg button").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            applyTheme(btn.dataset.themeOpt);
+            renderSettings();
+            toast(`外观 → ${btn.textContent}`);
+          });
+        });
+        return;
+      }
+
+      if (key === "agent") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>新建默认值</h4>
+            <div class="settings-row">
+              <div class="label"><strong>默认 Provider</strong><span>创建 Agent 时预选的模型供应商</span></div>
+              <div class="segmented" id="defProvSeg">
+                <button type="button" data-defp="openai" class="${s.defaultProvider === "openai" ? "on" : ""}">OpenAI</button>
+                <button type="button" data-defp="anthropic" class="${s.defaultProvider === "anthropic" ? "on" : ""}">Anthropic</button>
+                <button type="button" data-defp="local" class="${s.defaultProvider === "local" ? "on" : ""}">本地</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>工作区说明</strong><span>每个群的本地路径在右侧「群设置」单独修改</span></div>
+            </div>
+          </div>`;
+        $$("#defProvSeg button").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.settings.defaultProvider = btn.dataset.defp;
+            renderSettings();
+            toast("默认 Provider 已更新");
+          });
+        });
+        return;
+      }
+
+      if (key === "harness") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>编程内核连接</h4>
+            ${harnessRow("Codex", "本机 CLI / 会话", s.harnessCodex, "harnessCodex")}
+            ${harnessRow("Claude Code", "Anthropic 编程 Agent", s.harnessClaude, "harnessClaude")}
+            ${harnessRow("Cursor", "Cursor Agent Harness", s.harnessCursor, "harnessCursor")}
+          </div>
+          <div class="settings-block">
+            <h4>本机网络（对标 Computer）</h4>
+            <div class="settings-row">
+              <div class="label"><strong>经本机出口流量</strong><span>Route egress through this desktop</span></div>
+              <button type="button" class="toggle ${s.routeLocal ? "on" : ""}" data-toggle="routeLocal"></button>
+            </div>
+          </div>`;
+        bindSettingToggles();
+        $$("[data-cycle-harness]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const k = btn.dataset.cycleHarness;
+            const order = ["connected", "pending", "off"];
+            const cur = state.settings[k];
+            state.settings[k] = order[(order.indexOf(cur) + 1) % order.length];
+            renderSettings();
+          });
+        });
+        return;
+      }
+
+      if (key === "models") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>API Keys（仅存本机，不进群历史）</h4>
+            <div class="form-row"><label>OpenAI / 兼容网关</label><input type="password" placeholder="sk-••••" value="sk-demo-openai" /></div>
+            <div class="form-row"><label>Anthropic</label><input type="password" placeholder="sk-ant-••••" value="" /></div>
+            <div class="form-row"><label>本地 Ollama Base URL</label><input value="http://127.0.0.1:11434" /></div>
+          </div>
+          <div class="settings-block">
+            <button class="primary-btn" type="button" id="saveKeys">保存密钥</button>
+          </div>`;
+        $("#saveKeys")?.addEventListener("click", () => toast("密钥已保存到本机钥匙串（原型）"));
+        return;
+      }
+
+      if (key === "approvals") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>Auto-review（对标 Grok Bot）</h4>
+            <div class="settings-row">
+              <div class="label"><strong>安全命令可自动通过</strong><span>只读命令可跳过确认；写文件 / 网络仍需审批</span></div>
+              <button type="button" class="toggle ${s.autoApproveSafe ? "on" : ""}" data-toggle="autoApproveSafe"></button>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>危险操作一律询问</strong><span>Ask first 优先，无法被个人规则放宽</span></div>
+              <span style="font-size:12px;color:var(--accent-2)">已启用</span>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>个人规则</h4>
+            <div class="settings-row">
+              <div class="label"><strong>禁止直接 push 到 main</strong><span>个人规则 · 全设备同步（原型）</span></div>
+              <button class="ghost-btn" type="button">编辑</button>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>删除文件前必须确认</strong><span>个人规则</span></div>
+              <button class="ghost-btn" type="button">编辑</button>
+            </div>
+          </div>`;
+        bindSettingToggles();
+        return;
+      }
+
+      if (key === "notifications") {
+        box.innerHTML = `
+          <div class="settings-block">
+            <h4>应用通知</h4>
+            <div class="settings-row">
+              <div class="label"><strong>允许系统通知</strong><span>窗口未聚焦时提醒任务完成 / 需确认</span></div>
+              <button type="button" class="toggle ${s.notifyApp ? "on" : ""}" data-toggle="notifyApp"></button>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>提示音</strong><span>收到通知时播放短音</span></div>
+              <button type="button" class="toggle ${s.notifySound ? "on" : ""}" data-toggle="notifySound"></button>
+            </div>
+            <div class="settings-row">
+              <div class="label"><strong>聚焦时抑制</strong><span>Chorus 在前台时不弹系统通知（对标 Grok Bot）</span></div>
+              <span style="font-size:12px;color:var(--text-faint)">默认开启</span>
+            </div>
+          </div>`;
+        bindSettingToggles();
+        return;
+      }
+
+      // updates
+      box.innerHTML = `
+        <div class="settings-block">
+          <h4>Chorus 桌面</h4>
+          <div class="settings-row">
+            <div class="label"><strong>版本</strong><span>0.1.0-prototype</span></div>
+            <button class="ghost-btn" type="button" id="checkUpdate">检查更新</button>
+          </div>
+        </div>
+        <div class="settings-block">
+          <h4>关于</h4>
+          <div class="settings-row">
+            <div class="label"><strong>Chorus</strong><span>多 Agent 群聊 · 自定义模型 · Harness 内核</span></div>
+          </div>
+          <div class="settings-row">
+            <div class="label"><strong>快捷键</strong><span>⌘, 打开设置 · ⌘N 新建 Agent</span></div>
+          </div>
+        </div>`;
+      $("#checkUpdate")?.addEventListener("click", () => toast("已是最新原型版本"));
+    }
+
+    function harnessRow(name, desc, status, key) {
+      const map = {
+        connected: { t: "已连接", c: "ok" },
+        pending: { t: "待配置", c: "warn" },
+        off: { t: "未连接", c: "off" },
+      };
+      const m = map[status] || map.off;
+      return `<div class="settings-row">
+        <div class="label"><strong>${name}</strong><span>${desc}</span></div>
+        <button class="ghost-btn" type="button" data-cycle-harness="${key}">
+          <span class="status-dot ${m.c}"></span>${m.t}
+        </button>
+      </div>`;
+    }
+
+    function bindLangSeg() {
+      $$("#langSeg button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.settings.language = btn.dataset.lang;
+          renderSettings();
+          toast(`语言 → ${btn.textContent}`);
+        });
+      });
+    }
+
+    function bindSettingToggles() {
+      $$("[data-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const k = btn.dataset.toggle;
+          state.settings[k] = !state.settings[k];
+          btn.classList.toggle("on", state.settings[k]);
+          toast("已更新");
+        });
+      });
+    }
+
+    function updateThemeEffectiveLabel() {
+      const el = $("#themeEffective");
+      if (!el) return;
+      if (state.settings.theme === "system") {
+        const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        el.textContent = `随系统 → 当前 ${dark ? "Dark" : "Light"}`;
+      } else {
+        el.textContent = state.settings.theme === "dark" ? "强制 Dark" : "强制 Light";
+      }
+    }
+
+    function openSettings(section = "general") {
+      state.settingsSection = section;
+      renderSettings();
+      openOverlay("settingsOverlay");
+    }
+
+    function renderAccount() {
+      const av = $("#accountAvatar");
+      const name = $("#accountName");
+      const sub = $("#accountSub");
+      if (!state.user) {
+        av.textContent = "?";
+        av.style.background = "";
+        av.style.color = "";
+        name.textContent = "未登录";
+        sub.textContent = "Google 登录 / 注册";
+        return;
+      }
+      av.textContent = state.user.name.slice(0, 1).toUpperCase();
+      av.style.background = state.user.provider === "google" ? "#e8f0fe" : "var(--accent-soft)";
+      av.style.color = state.user.provider === "google" ? "#1967d2" : "var(--accent)";
+      name.textContent = state.user.name;
+      sub.textContent = state.user.provider === "google" ? "Google 已登录" : "邮箱账号";
+    }
+
+    function syncAuthModal() {
+      const loggedIn = !!state.user;
+      $("#authLoggedOut").hidden = loggedIn;
+      $("#authLoggedIn").hidden = !loggedIn;
+      if (loggedIn) {
+        $("#authTitle").textContent = "账号";
+        $("#authDesc").textContent = "管理登录状态";
+        $("#authProfileName").textContent = state.user.name;
+        $("#authProfileEmail").textContent = state.user.email;
+        $("#authProviderPill").textContent = state.user.provider === "google" ? "Google" : "邮箱";
+      } else {
+        $("#authTitle").textContent = "登录 Chorus";
+        $("#authDesc").textContent = "用 Google 登录，或注册本机账号";
+      }
+    }
+
+    function openAuthModal() {
+      syncAuthModal();
+      openOverlay("authOverlay");
+    }
+
+    function loginAs(user) {
+      state.user = user;
+      localStorage.setItem("chorus-user", JSON.stringify(user));
+      renderAccount();
+      syncAuthModal();
+      closeOverlay("authOverlay");
+      toast(`已登录：${user.name}`);
+    }
+
+    function logout() {
+      state.user = null;
+      localStorage.removeItem("chorus-user");
+      renderAccount();
+      syncAuthModal();
+      toast("已退出登录");
+    }
+
+    function openRoomModal() {
+      $("#roomName").value = "";
+      state.roomRule = "free";
+      $("#ruleFree").classList.add("selected");
+      $("#ruleMention").classList.remove("selected");
+      $("#roomAgentPick").innerHTML = state.agents
+        .map((a) => {
+          const c = avatarStyle(a.name);
+          return `<label>
+            <input type="checkbox" value="${a.id}" ${a.id !== "a4" ? "checked" : ""} />
+            <span class="avatar" style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:${c.bg};color:${c.fg}">${a.initial}</span>
+            <span>${escapeHtml(a.name)} <span style="color:var(--text-faint);font-size:11px">· ${HARNESS_LABEL[a.harness]}</span></span>
+          </label>`;
+        })
+        .join("");
+      openOverlay("roomOverlay");
+      setTimeout(() => $("#roomName").focus(), 50);
+    }
+
+    function createRoomFromModal() {
+      const name = $("#roomName").value.trim() || "未命名群聊";
+      const checked = $$("#roomAgentPick input:checked").map((el) => el.value);
+      if (checked.length === 0) {
+        toast("至少选择一个 Agent");
+        return;
+      }
+      const id = "r" + Date.now();
+      state.rooms.push({
+        id,
+        name,
+        agentIds: checked,
+        rule: state.roomRule,
+        workspace: "",
+        messages: [
+          { id: "d", type: "day", text: "今天" },
+          {
+            id: "hello",
+            from: "you",
+            text: `「${name}」已创建。大家先做个自我介绍，再说我们怎么协作。`,
+            time: nowTime(),
+          },
+        ],
+      });
+      state.activeRoomId = id;
+      state.selectedAgentId = null;
+      closeOverlay("roomOverlay");
+      openPanel("room", { expand: true });
+      renderRooms();
+      renderMemberStack();
+      renderMessages();
+      toast(`已创建群「${name}」`);
+      // simulate first agent greeting
+      setTimeout(() => simulateAgentReplies(`欢迎加入 ${name}`), 600);
+    }
+
+    async function sendMessage() {
+      if (state.sending) return;
+      const input = $("#composerInput");
+      const text = input.value.trim();
+      if (!text) return;
+      const room = activeRoom();
+      room.messages.push({
+        id: "u" + Date.now(),
+        from: "you",
+        text,
+        time: nowTime(),
+      });
+      input.value = "";
+      hideMention();
+      renderMessages();
+      await simulateAgentReplies(text);
+    }
+
+    function pickResponders(text) {
+      const room = activeRoom();
+      const members = room.agentIds.map(getAgent).filter(Boolean);
+      const mentioned = [];
+      const re = /@(\w+)/g;
+      let m;
+      while ((m = re.exec(text))) {
+        const hit = members.find((a) => a.name.toLowerCase() === m[1].toLowerCase());
+        if (hit) mentioned.push(hit);
+      }
+      if (mentioned.length) return mentioned;
+      if (room.rule === "mention") return [];
+      // free: 2 agents respond in turn
+      const shuffled = [...members].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, Math.min(2, shuffled.length));
+    }
+
+    function replyFor(agent, userText) {
+      const snippets = {
+        Architect: [
+          `从结构上看，「${userText.slice(0, 24)}…」应先定 Room 的发言权，再谈 Harness 并发。`,
+          "建议把模型 Provider 与 Harness 解耦：说话一套配置，动手另一套。",
+          "交互上保留群聊时间线即可，diff / 终端输出用折叠卡片挂在消息下。",
+        ],
+        Coder: [
+          "我可以先用 Codex 在工作区起一个最小桌面壳，把群列表和消息流跑通。",
+          "实现顺序：本地状态 → 群消息 → Agent 配置 → 再接第一个 Harness 适配器。",
+          `收到。若需要落地，我可以挂 ${HARNESS_LABEL[agent.harness]} 开干。`,
+        ],
+        Reviewer: [
+          "注意密钥：Provider Key 与各 Harness 登录态要分沙箱，别写进群历史。",
+          "多智能体同时写文件必须有锁或队列，否则 review 会变成救火。",
+          "验收时重点看：@ 点名是否只触发一人，以及 Harness 失败能否在气泡里回显。",
+        ],
+        PM: [
+          "用户价值一句话：比 Grok 多「自定义模型 + 编程内核」。MVP 别做成万能工作台。",
+          "建议第一版只演示：建 Agent → 拉群 → 讨论 → 一个 Harness 回传结果。",
+          "发言规则做成群设置，比做成全局开关更符合使用场景。",
+        ],
+      };
+      const pool = snippets[agent.name] || [
+        `关于「${userText.slice(0, 20)}」，我从 ${agent.role} 视角补充一点：先对齐目标再行动。`,
+        `我是 ${agent.name}（${HARNESS_LABEL[agent.harness]}）。可以继续追问细节。`,
+      ];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    async function simulateAgentReplies(userText) {
+      const responders = pickResponders(userText);
+      if (!responders.length) {
+        toast("当前群为「仅 @ 发言」，请 @ 某个 Agent");
+        return;
+      }
+      state.sending = true;
+      $("#btnSend").disabled = true;
+      for (const agent of responders) {
+        $("#typing").hidden = false;
+        $("#typingText").textContent = `${agent.name} 正在输入…`;
+        await wait(700 + Math.random() * 900);
+        const room = activeRoom();
+        const msg = {
+          id: "m" + Date.now() + agent.id,
+          from: agent.id,
+          text: replyFor(agent, userText),
+          time: nowTime(),
+        };
+        if (agent.harness !== "none" && /实现|代码|落地|开干|Codex|改/.test(userText + msg.text)) {
+          msg.chips = [`${HARNESS_LABEL[agent.harness]} · 待命`];
+        }
+        room.messages.push(msg);
+        renderMessages();
+      }
+      $("#typing").hidden = true;
+      state.sending = false;
+      $("#btnSend").disabled = false;
+    }
+
+    function wait(ms) {
+      return new Promise((r) => setTimeout(r, ms));
+    }
+
+    function showMention(filter = "") {
+      const room = activeRoom();
+      const members = room.agentIds.map(getAgent).filter(Boolean);
+      const q = filter.toLowerCase();
+      const list = members.filter((a) => !q || a.name.toLowerCase().includes(q));
+      const pop = $("#mentionPop");
+      if (!list.length) {
+        pop.classList.remove("open");
+        return;
+      }
+      pop.innerHTML = list
+        .map((a, i) => {
+          const c = avatarStyle(a.name);
+          return `<button type="button" class="${i === 0 ? "active" : ""}" data-mention="${escapeHtml(a.name)}">
+            <span class="avatar" style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:${c.bg};color:${c.fg}">${a.initial}</span>
+            ${escapeHtml(a.name)}
+            <span style="margin-left:auto;font-size:11px;color:var(--text-faint)">${HARNESS_LABEL[a.harness]}</span>
+          </button>`;
+        })
+        .join("");
+      pop.classList.add("open");
+      $$("#mentionPop button").forEach((btn) => {
+        btn.addEventListener("click", () => insertMention(btn.dataset.mention));
+      });
+    }
+
+    function hideMention() {
+      $("#mentionPop").classList.remove("open");
+    }
+
+    function insertMention(name) {
+      const input = $("#composerInput");
+      const v = input.value;
+      const at = v.lastIndexOf("@");
+      if (at >= 0) {
+        input.value = v.slice(0, at) + "@" + name + " " + v.slice(input.selectionStart);
+      } else {
+        input.value = v + "@" + name + " ";
+      }
+      hideMention();
+      input.focus();
+    }
+
+    // ---- Events ----
+    $("#roomList").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-room]");
+      if (!btn) return;
+      state.activeRoomId = btn.dataset.room;
+      state.selectedAgentId = null;
+      openPanel("room", { expand: true });
+      renderRooms();
+      renderMemberStack();
+      renderMessages();
+    });
+
+    $("#agentList").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-agent]");
+      if (!btn) return;
+      openPanel("agent", { agentId: btn.dataset.agent, expand: true });
+    });
+
+    $("#btnCollapsePanel").addEventListener("click", () => setPanelCollapsed(true));
+    $("#btnExpandPanel").addEventListener("click", () => setPanelCollapsed(false));
+    $("#btnTogglePanel").addEventListener("click", () => setPanelCollapsed(!state.panelCollapsed));
+
+    $("#btnNewAgent").addEventListener("click", openAgentModal);
+    $("#btnNewAgentSide").addEventListener("click", openAgentModal);
+    $("#btnNewRoom").addEventListener("click", openRoomModal);
+    $("#btnNewRoomSide").addEventListener("click", openRoomModal);
+    $("#btnOpenSettings").addEventListener("click", () => openSettings("general"));
+    $("#btnAccount").addEventListener("click", openAuthModal);
+
+    $("#btnGoogleLogin").addEventListener("click", () => {
+      loginAs({
+        name: "Jia Hao",
+        email: "jiahao@gmail.com",
+        provider: "google",
+      });
+    });
+    $("#btnRegister").addEventListener("click", () => {
+      const email = $("#regEmail").value.trim();
+      const name = $("#regName").value.trim();
+      const password = $("#regPassword").value;
+      if (!email || !name) {
+        toast("请填写邮箱和显示名称");
+        return;
+      }
+      if (password.length < 8) {
+        toast("密码至少 8 位");
+        return;
+      }
+      loginAs({ name, email, provider: "email" });
+    });
+    $("#btnLogout").addEventListener("click", () => {
+      logout();
+      closeOverlay("authOverlay");
+    });
+
+    $$("#settingsNav button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.settingsSection = btn.dataset.settings;
+        renderSettings();
+      });
+    });
+
+    $$("[data-close]").forEach((btn) => {
+      btn.addEventListener("click", () => closeOverlay(btn.dataset.close));
+    });
+
+    $$(".overlay").forEach((ov) => {
+      ov.addEventListener("click", (e) => {
+        if (e.target === ov) ov.classList.remove("open");
+      });
+    });
+
+    $("#providerChoices").addEventListener("click", (e) => {
+      const choice = e.target.closest(".choice");
+      if (!choice) return;
+      selectChoice("#providerChoices", "provider", choice.dataset.provider);
+      state.agentDraft.provider = choice.dataset.provider;
+      $("#customEndpointRow").hidden = choice.dataset.provider !== "custom";
+    });
+
+    $("#harnessChoices").addEventListener("click", (e) => {
+      const choice = e.target.closest(".choice");
+      if (!choice) return;
+      selectChoice("#harnessChoices", "harness", choice.dataset.harness);
+      state.agentDraft.harness = choice.dataset.harness;
+    });
+
+    $("#editProviderChoices").addEventListener("click", (e) => {
+      const choice = e.target.closest(".choice");
+      if (!choice) return;
+      selectChoice("#editProviderChoices", "provider", choice.dataset.provider);
+      state.editDraft.provider = choice.dataset.provider;
+      $("#editEndpointRow").hidden = choice.dataset.provider !== "custom";
+    });
+
+    $("#editHarnessChoices").addEventListener("click", (e) => {
+      const choice = e.target.closest(".choice");
+      if (!choice) return;
+      selectChoice("#editHarnessChoices", "harness", choice.dataset.harness);
+      state.editDraft.harness = choice.dataset.harness;
+    });
+
+    $("#editNotifyToggle").addEventListener("click", () => {
+      state.editDraft.notify = !state.editDraft.notify;
+      $("#editNotifyToggle").classList.toggle("on", state.editDraft.notify);
+      $("#editNotifyToggle").setAttribute("aria-pressed", String(state.editDraft.notify));
+    });
+
+    $("#agentNext").addEventListener("click", () => {
+      if (state.agentModalMode === "edit") {
+        saveEditedAgent();
+        return;
+      }
+      if (state.agentWizardStep < 3) {
+        if (state.agentWizardStep === 1 && !$("#agentName").value.trim()) {
+          toast("先给 Agent 起个名字");
+          return;
+        }
+        state.agentWizardStep += 1;
+        syncAgentWizardUI();
+      } else {
+        createAgentFromWizard();
+      }
+    });
+
+    $("#agentBack").addEventListener("click", () => {
+      if (state.agentWizardStep > 1) {
+        state.agentWizardStep -= 1;
+        syncAgentWizardUI();
+      }
+    });
+
+    $("#agentDelete").addEventListener("click", deleteEditedAgent);
+
+    $("#ruleFree").addEventListener("click", () => {
+      state.roomRule = "free";
+      $("#ruleFree").classList.add("selected");
+      $("#ruleMention").classList.remove("selected");
+    });
+    $("#ruleMention").addEventListener("click", () => {
+      state.roomRule = "mention";
+      $("#ruleMention").classList.add("selected");
+      $("#ruleFree").classList.remove("selected");
+    });
+
+    $("#roomCreate").addEventListener("click", createRoomFromModal);
+    $("#btnSend").addEventListener("click", sendMessage);
+    $("#composerInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    $("#composerInput").addEventListener("input", () => {
+      const v = $("#composerInput").value;
+      const caret = $("#composerInput").selectionStart;
+      const before = v.slice(0, caret);
+      const match = before.match(/@(\w*)$/);
+      if (match) showMention(match[1]);
+      else hideMention();
+    });
+
+    $("#btnMention").addEventListener("click", () => {
+      const input = $("#composerInput");
+      input.value += (input.value && !input.value.endsWith(" ") ? " @" : "@");
+      input.focus();
+      showMention("");
+    });
+
+    $("#btnAttach").addEventListener("click", () => toast("附加文件为原型占位"));
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === ",") {
+        e.preventDefault();
+        openSettings(state.settingsSection || "general");
+        return;
+      }
+      if (e.key === "Escape") {
+        closeOverlay("agentOverlay");
+        closeOverlay("roomOverlay");
+        closeOverlay("settingsOverlay");
+        closeOverlay("authOverlay");
+        hideMention();
+      }
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (state.settings.theme === "system") {
+        applyTheme("system");
+        updateThemeEffectiveLabel();
+      }
+    });
+
+    try {
+      const savedUser = JSON.parse(localStorage.getItem("chorus-user") || "null");
+      if (savedUser?.name && savedUser?.email) state.user = savedUser;
+    } catch (_) {
+      state.user = null;
+    }
+
+    applyTheme(state.settings.theme);
+    renderAccount();
+    updateClock();
+    setInterval(updateClock, 30_000);
+    renderAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Chorus</string>
+    <string name="title_activity_main">Chorus</string>
+    <string name="package_name">com.chorus.app</string>
+    <string name="custom_url_scheme">com.chorus.app</string>
+    <string name="update_relay_url" translatable="false"></string>
+</resources>

@@ -1,0 +1,124 @@
+import java.security.KeyStore
+import java.security.MessageDigest
+import javax.naming.ldap.LdapName
+
+apply plugin: 'com.android.application'
+
+// ------------ 发布签名：仅显式兼容旧侧载包时沿用历史调试证书 ---------------
+def legacySigning = providers.gradleProperty('chorusLegacySigning').orNull == 'true'
+def releaseStore = System.getenv('CHORUS_ANDROID_KEYSTORE')
+def releaseStorePassword = System.getenv('CHORUS_ANDROID_STORE_PASSWORD')
+def releaseKeyAlias = System.getenv('CHORUS_ANDROID_KEY_ALIAS')
+def releaseKeyPassword = System.getenv('CHORUS_ANDROID_KEY_PASSWORD')
+def releaseSigningReady = [releaseStore, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].every { it }
+def legacyCertificate = 'b6b00d787ded826ebdd47909531adffb6b9a9f31ca7a36ccccc6249e72f1c859'
+def expectedCertificate = legacySigning ? legacyCertificate : System.getenv('CHORUS_ANDROID_EXPECTED_CERT_SHA256')
+
+android {
+    namespace "com.chorus.app"
+    compileSdk rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.chorus.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 14
+        versionName "0.5.8"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        if (releaseSigningReady) {
+            release {
+                storeFile file(releaseStore)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+    buildTypes {
+        release {
+            debuggable false
+            jniDebuggable false
+            if (legacySigning) {
+                signingConfig signingConfigs.debug
+            } else if (releaseSigningReady) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+// 缺少签名时拒绝发布构建，避免把 unsigned/debug 包当作交付包；不记录密码。
+tasks.register('validateReleaseSigning') {
+    doLast {
+        if (legacySigning && [releaseStore, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].any { it }) {
+            throw new GradleException('历史签名与正式签名不能同时配置。')
+        }
+        if (!legacySigning && !releaseSigningReady) {
+            throw new GradleException('Release 构建需要配置 CHORUS_ANDROID_KEYSTORE、STORE_PASSWORD、KEY_ALIAS、KEY_PASSWORD；旧版兼容升级请使用 scripts/build-apk.sh --legacy-signing。')
+        }
+        if (legacySigning && !android.signingConfigs.debug.storeFile.isFile()) {
+            throw new GradleException('原有 debug.keystore 不存在，禁止自动创建新签名导致旧版无法覆盖升级。')
+        }
+        if (!(expectedCertificate ==~ /(?i)[a-f0-9]{64}/)) {
+            throw new GradleException('必须设置 CHORUS_ANDROID_EXPECTED_CERT_SHA256 为发布渠道的证书 SHA-256。')
+        }
+        // 直接通过 Gradle 构建也检查实际证书，不能绕过交付脚本的签名边界。
+        def signing = legacySigning ? android.signingConfigs.debug : android.signingConfigs.release
+        def keyStore = KeyStore.getInstance(signing.storeType ?: KeyStore.getDefaultType())
+        signing.storeFile.withInputStream { input -> keyStore.load(input, signing.storePassword.toCharArray()) }
+        def certificate = keyStore.getCertificate(signing.keyAlias)
+        if (certificate == null || !keyStore.isKeyEntry(signing.keyAlias)) {
+            throw new GradleException('密钥库中不存在指定的签名私钥及证书。')
+        }
+        certificate.checkValidity()
+        def fingerprint = MessageDigest.getInstance('SHA-256').digest(certificate.encoded).encodeHex().toString()
+        if (!fingerprint.equalsIgnoreCase(expectedCertificate)) {
+            throw new GradleException('签名证书与预期发布渠道不一致，拒绝构建不可覆盖升级的安装包。')
+        }
+        def debugCertificate = new LdapName(certificate.subjectX500Principal.name).rdns.any { it.type.equalsIgnoreCase('CN') && it.value.toString().equalsIgnoreCase('Android Debug') }
+        if (!legacySigning && (fingerprint == legacyCertificate || debugCertificate)) {
+            throw new GradleException('正式签名不能使用调试证书；历史兼容升级须显式使用 --legacy-signing。')
+        }
+        logger.lifecycle("------------- 校验 Android 发布签名：${legacySigning ? '历史侧载兼容' : '正式签名'} --------------")
+    }
+}
+tasks.matching { it.name == 'preReleaseBuild' }.configureEach {
+    dependsOn 'validateReleaseSigning'
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
