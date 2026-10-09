@@ -32,7 +32,7 @@ func (f fakeGoogle) Verify(context.Context, string) (identity.Profile, error) {
 // 注意事项：使用内存存储，不连接 MySQL。
 func TestPrimaryDispatchAndSync(t *testing.T) {
 	ctx := context.Background()
-	svc := New(storage.NewMemory(), fakeGoogle{profile: identity.Profile{Email: "User@Example.com", Name: "海底捞", Verified: true}}, nil, []byte("0123456789abcdef0123456789abcdef"), 100000)
+	svc := New(storage.NewMemory(), fakeGoogle{profile: identity.Profile{Email: "User@Example.com", Name: "测试用户", Verified: true}}, nil, []byte("0123456789abcdef0123456789abcdef"), 100000)
 	mac := DeviceInput{ClientDeviceID: "mac-device-01", Name: "办公 Mac", Platform: "mac"}
 	phone := DeviceInput{ClientDeviceID: "android-device-1", Name: "手机", Platform: "android"}
 	primary, err := svc.LoginGoogle(ctx, "token", mac)
